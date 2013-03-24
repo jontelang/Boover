@@ -1,0 +1,10 @@
+Package: com.jontelang.boover
+Name: Boover
+Depends: mobilesubstrate
+Version: 1.9
+Architecture: iphoneos-arm
+Description: Total control over your badges.
+Maintainer: Jonathan Winger Lang
+Author: Jonathan Winger Lang
+Section: Tweaks
+Icon: file:///Library/PreferenceBundles/booverpreferences.bundle/icon.png

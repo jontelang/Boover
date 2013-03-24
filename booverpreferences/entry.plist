@@ -1,0 +1,11 @@
+{
+    entry = {
+	bundle = booverpreferences;
+	cell = PSLinkCell;
+	detail = booverpreferencesListController;
+	icon = booverpreferences.png;
+	isController = 1;
+	label = Boover;
+    icon = icon.png;
+    };
+}

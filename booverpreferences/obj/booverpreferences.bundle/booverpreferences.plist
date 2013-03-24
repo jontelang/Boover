@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>items</key>
+	<array>
+		<dict>
+			<key>cell</key>			<string>PSButtonCell</string>
+			<key>label</key>		<string>Respring</string>
+			<key>action</key>  		<string>respring</string>
+		</dict>
+
+		<dict>
+			<key>cell</key>			<string>PSGroupCell</string>
+			<key>label</key>		<string></string>
+		</dict>
+
+		<dict>
+			<key>cell</key>			<string>PSSwitchCell</string>
+			<key>id</key> 			<string>EnableBooverToggle</string>
+			<key>defaults</key>		<string>com.jontelang.boover</string>
+			<key>key</key> 			<string>isEnabled</string>
+			<key>label</key>		<string>Enable</string>
+			<key>enabled</key> 		<true/>
+			<key>default</key> 		<false/>
+			<key>alternateColors</key><true/>
+		</dict>
+
+		<!--dict>
+			<key>cell</key>			<string>PSSwitchCell</string>
+			<key>default</key> 		<false/>
+			<key>id</key> 			<string>HideLabelsToggle</string>
+			<key>defaults</key>		<string>com.jontelang.boover</string>
+			<key>key</key> 			<string>hideLabels</string>
+			<key>label</key>		<string>Hide labels</string>
+			<key>enabled</key> 		<true/>
+		</dict-->
+
+		<!--dict>
+			<key>cell</key> 	 	<string>PSLinkCell</string>
+			<key>defaults</key> 	<string>com.jontelang.boover</string>
+			<key>label</key>		<string>Precision offset</string>
+			<key>detail</key> 		<string>OffsetController</string>
+		</dict-->
+
+		<dict>
+			<!--key>PostNotification</key><string>com.aaronash.threedeeboard-Settings</string-->
+			<key>cell</key> 		<string>PSLinkListCell</string>
+			<!--key>default</key> 		<integer>0</integer-->
+			<key>defaults</key> 	<string>com.jontelang.boover</string>
+			<key>key</key> 			<string>BadgePosition</string>
+			<key>label</key> 		<string>Badge position</string>
+			<key>detail</key> 		<string>PSListItemsController</string>
+			<key>default</key> 		<integer>2</integer>
+			<key>validValues</key> 	<array>
+										<integer>0</integer>
+										<integer>1</integer>
+										<integer>2</integer>
+
+										<integer>3</integer>
+										<integer>4</integer>
+										<integer>5</integer>
+
+										<integer>6</integer>
+										<integer>7</integer>
+										<integer>8</integer>
+
+										<!--integer>9</integer-->
+									</array>
+			<key>validTitles</key> 	<array>
+										<string>Top left</string>
+										<string>Top center</string>
+										<string>Top right (normal)</string>
+
+										<string>Middle left</string>
+										<string>Middle center</string>
+										<string>Middle right</string>
+
+										<string>Bottom left</string>
+										<string>Bottom center</string>
+										<string>Bottom right</string>
+
+										<!--string>Replace label (app name)</string-->
+									</array>
+		</dict>
+
+
+		<dict>
+			<key>cell</key>			<string>PSGroupCell</string>
+			<key>label</key>		<string>Alpha</string>
+		</dict>
+		<dict>
+			<key>cell</key>			<string>PSSliderCell</string>
+			<key>key</key>			<string>alpha</string>
+			<key>defaults</key>     <string>com.jontelang.boover</string>
+			<key>showValue</key> 	<true/>
+			<key>min</key> 			<integer>0</integer>
+			<key>max</key> 			<integer>1</integer>
+			<key>id</key> 			<string>SliderAlpha</string>
+			<key>default</key> 		<integer>1</integer>
+		</dict>
+
+
+		<dict>
+			<key>cell</key>			<string>PSGroupCell</string>
+			<key>label</key>		<string>Pixel precision offset Y</string>
+		</dict>
+		<dict>
+			<key>cell</key>			<string>PSSliderCell</string>
+			<key>key</key>			<string>offsetY</string>
+			<key>defaults</key>     <string>com.jontelang.boover</string>
+			<key>showValue</key> 	<true/>
+			<key>min</key> 			<integer>-50</integer>
+			<key>max</key> 			<integer>50</integer>
+			<key>id</key> 			<string>SliderOffsetY</string>
+			<key>default</key> 		<integer>0</integer>
+		</dict>
+		<dict>
+			<key>cell</key>			<string>PSButtonCell</string>
+			<key>label</key>		<string>Reset to 0</string>
+			<key>action</key>  		<string>resetoffsety</string>
+		</dict>
+		<dict>
+			<key>cell</key>			<string>PSButtonCell</string>
+			<key>label</key>		<string>Move up</string>
+			<key>action</key>  		<string>decreasey</string>
+		</dict>
+		<dict>
+			<key>cell</key>			<string>PSButtonCell</string>
+			<key>label</key>		<string>Move down</string>
+			<key>action</key>  		<string>increasey</string>
+		</dict>
+
+		<dict>
+			<key>cell</key>			<string>PSGroupCell</string>
+			<key>label</key>		<string>Pixel precision offset X</string>
+		</dict>
+		<dict>
+			<key>cell</key>			<string>PSSliderCell</string>
+			<key>key</key>			<string>offsetX</string>
+			<key>defaults</key>     <string>com.jontelang.boover</string>
+			<key>showValue</key> 	<true/>
+			<key>min</key> 			<integer>-50</integer>
+			<key>max</key> 			<integer>50</integer>
+			<key>id</key> 			<string>SliderOffsetX</string>
+			<key>default</key> 		<integer>0</integer>
+		</dict>
+		<dict>
+			<key>cell</key>			<string>PSButtonCell</string>
+			<key>label</key>		<string>Reset to 0</string>
+			<key>action</key>  		<string>resetoffsetx</string>
+		</dict>
+		<dict>
+			<key>cell</key>			<string>PSButtonCell</string>
+			<key>label</key>		<string>Move right</string>
+			<key>action</key>  		<string>increasex</string>
+		</dict>
+		<dict>
+			<key>cell</key>			<string>PSButtonCell</string>
+			<key>label</key>		<string>Move left</string>
+			<key>action</key>  		<string>decreasex</string>
+		</dict>
+
+
+		<dict>
+			<key>cell</key>			<string>PSGroupCell</string>
+			<key>label</key>		<string>Badge scale</string>
+		</dict>
+		<dict>
+			<key>cell</key>			<string>PSSliderCell</string>
+			<key>key</key>			<string>scale</string>
+			<key>defaults</key>     <string>com.jontelang.boover</string>
+			<key>showValue</key> 	<true/>
+			<key>min</key> 			<integer>-1</integer>
+			<key>max</key> 			<integer>3</integer>
+			<key>id</key> 			<string>SliderScale</string>
+			<key>default</key> 		<integer>1</integer>
+		</dict>
+		<dict>
+			<key>cell</key>			<string>PSButtonCell</string>
+			<key>label</key>		<string>Reset to 1</string>
+			<key>action</key>  		<string>resetscale</string>
+		</dict>
+		<dict>
+			<key>cell</key>			<string>PSButtonCell</string>
+			<key>label</key>		<string>Make bigger</string>
+			<key>action</key>  		<string>increasescale</string>
+		</dict>
+		<dict>
+			<key>cell</key>			<string>PSButtonCell</string>
+			<key>label</key>		<string>Make smaller</string>
+			<key>action</key>  		<string>decreasescale</string>
+		</dict>
+		<dict>
+			<key>cell</key>			<string>PSGroupCell</string>
+			<key>label</key>		<string>Badge scale is and experimental setting. Ranges 0 to 2 should be alright. Please report any problems to my email: jontelang@gmail.com. Especially if the default value (1) is errorous for some reason.</string>
+		</dict>
+	</array>
+	<key>title</key>				<string>Boover settings</string>
+
+</dict>
+</plist>
