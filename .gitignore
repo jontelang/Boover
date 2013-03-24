@@ -3,4 +3,6 @@
 _/
 obj/
 theos
-deb
+*.deb
+!RELEASES/*.deb
+
