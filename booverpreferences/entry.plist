@@ -3,7 +3,7 @@
 	bundle = booverpreferences;
 	cell = PSLinkCell;
 	detail = booverpreferencesListController;
-	icon = booverpreferences.png;
+	icon = icon.png;
 	isController = 1;
 	label = Boover;
     icon = icon.png;

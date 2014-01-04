@@ -34,6 +34,7 @@
 @interface SBIconView : UIView
     -(void)setLabelHidden:(BOOL)hidden;
     -(void)updateLabel;
+    -(CGRect)newRectAtPosition:(int)pos withOffsetX:(int)offsetX andOffsetY:(int)offsetY andOriginalRect:(CGRect)orect;
 @end
 
 @interface SBIcon : NSObject
@@ -43,15 +44,63 @@
     - (BOOL)_shouldShowSashForNewlyInstalledApp;
 @end
 
+%new
+-(CGRect)newRectAtPosition:(int)pos withOffsetX:(int)offsetX andOffsetY:(int)offsetY andOriginalRect:(CGRect)orect
+{
+    CGRect newRect;
 
+    switch( pos )
+    {
+        case 0: newRect = CGRectMake(-9+offsetX, -9+offsetY, orect.size.width, orect.size.height);               break;
+        case 1: newRect = CGRectMake((self.bounds.size.width/2)-(orect.size.width/2)+offsetX, -9+offsetY, orect.size.width, orect.size.height);                  break;
+        case 2: newRect = CGRectMake(orect.origin.x+offsetX,  orect.origin.y+offsetY,  orect.size.width, orect.size.height); break;
 
+        case 3: newRect = CGRectMake(-9+offsetX, self.bounds.size.height/2-9+3-orect.size.height/2+offsetY,  orect.size.width, orect.size.height);  break;
+        case 4: newRect = CGRectMake((self.bounds.size.width/2)-(orect.size.width/2)+offsetX,  (self.bounds.size.height/2)-(orect.size.height/2)-9+3+offsetY, orect.size.width, orect.size.height);                  break;
+        case 5: newRect = CGRectMake(orect.origin.x+offsetX, self.bounds.size.height/2-9+3-orect.size.height/2+offsetY,  orect.size.width, orect.size.height); break;
+
+        case 6: newRect = CGRectMake(-9+offsetX,  self.bounds.size.height-9+3-orect.size.height+offsetY,  orect.size.width, orect.size.height);       break;
+        case 7: newRect = CGRectMake((self.bounds.size.width/2)-(orect.size.width/2)+offsetX, self.bounds.size.height-9+3-orect.size.height+offsetY, orect.size.width, orect.size.height);                  break;
+        case 8: newRect = CGRectMake(orect.origin.x+offsetX, self.bounds.size.height-9+3-orect.size.height+offsetY, orect.size.width, orect.size.height);     break;
+
+        default: newRect = orect; break;
+    }
+    
+    return newRect;
+}
+
+// iOS 7
+-(CGRect)_frameForAccessoryView
+{
+    %log;
+    CGRect o = %orig();
+    NSDictionary *d = [[NSDictionary alloc] initWithContentsOfFile:@"/var/mobile/Library/Preferences/com.jontelang.boover.plist"];
+    if( d )
+    {
+        bool isEnabled = [[d valueForKey:@"isEnabled"] boolValue];
+        if( isEnabled )
+        {
+            // Position
+            int p           = [[d valueForKey:@"BadgePosition"] intValue];
+            int offsetX     = [[d valueForKey:@"offsetX"]       intValue];
+            int offsetY     = [[d valueForKey:@"offsetY"]       intValue];
+            o = [self newRectAtPosition:p withOffsetX:offsetX andOffsetY:offsetY andOriginalRect:o];
+        }
+    }    
+    return o;
+}
+
+// iOS 5 and 6
 -(void)updateBadge{
+    %log;
     %orig;
 
     UIImageView *v;
     if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 6.0)
     {
         v = MSHookIvar<UIImageView *>(self,  "_accessoryView");
+
+        if(v==nil){return;}
 
         SBIcon *i = MSHookIvar<SBIcon *>(self,  "_icon");
         if( [i isKindOfClass:[%c(SBUserInstalledApplicationIcon) class]] )
@@ -79,7 +128,8 @@
             int offsetX     = [[d valueForKey:@"offsetX"]       intValue];
             int offsetY     = [[d valueForKey:@"offsetY"]       intValue];
 
-            // Refactor the positioningcode it looks bad.
+            //Refactor the positioningcode it looks bad.
+            // iOS7 notes. For now I'll actually keep this bad code as it actually solves some other preoblems
             switch( p )
             {
                 case 0: [v setFrame:CGRectMake( -9+offsetX, -9+offsetY, v.bounds.size.width, v.bounds.size.height)];               break;

@@ -1,0 +1,19 @@
+Description
+===========
+
+Compatible with iOS 5,6 and 7
+
+Boover lets you move your badges. Use pre-defined values, manual input or a mix of them both. Haven't we always wanted the badges 13 pixels up from the bottom right corner? With Boover this is finally possible!
+
+Perfect for themers.
+
+Configure options from Settings app.
+
+
+
+
+
+Changelog
+=========
+1.9.1-1
+- iOS7 and arm64 ready

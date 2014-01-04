@@ -87,22 +87,6 @@
 
 		<dict>
 			<key>cell</key>			<string>PSGroupCell</string>
-			<key>label</key>		<string>Alpha</string>
-		</dict>
-		<dict>
-			<key>cell</key>			<string>PSSliderCell</string>
-			<key>key</key>			<string>alpha</string>
-			<key>defaults</key>     <string>com.jontelang.boover</string>
-			<key>showValue</key> 	<true/>
-			<key>min</key> 			<integer>0</integer>
-			<key>max</key> 			<integer>1</integer>
-			<key>id</key> 			<string>SliderAlpha</string>
-			<key>default</key> 		<integer>1</integer>
-		</dict>
-
-
-		<dict>
-			<key>cell</key>			<string>PSGroupCell</string>
 			<key>label</key>		<string>Pixel precision offset Y</string>
 		</dict>
 		<dict>
@@ -164,6 +148,26 @@
 
 		<dict>
 			<key>cell</key>			<string>PSGroupCell</string>
+			<key>footerText</key> 	<string>For now, the below settings are iOS 5 and 6 only.</string>
+		</dict>
+
+		<dict>
+			<key>cell</key>			<string>PSGroupCell</string>
+			<key>label</key>		<string>Alpha</string>
+		</dict>
+		<dict>
+			<key>cell</key>			<string>PSSliderCell</string>
+			<key>key</key>			<string>alpha</string>
+			<key>defaults</key>     <string>com.jontelang.boover</string>
+			<key>showValue</key> 	<true/>
+			<key>min</key> 			<integer>0</integer>
+			<key>max</key> 			<integer>1</integer>
+			<key>id</key> 			<string>SliderAlpha</string>
+			<key>default</key> 		<integer>1</integer>
+		</dict>
+
+		<dict>
+			<key>cell</key>			<string>PSGroupCell</string>
 			<key>label</key>		<string>Badge scale</string>
 		</dict>
 		<dict>
@@ -191,10 +195,7 @@
 			<key>label</key>		<string>Make smaller</string>
 			<key>action</key>  		<string>decreasescale</string>
 		</dict>
-		<dict>
-			<key>cell</key>			<string>PSGroupCell</string>
-			<key>label</key>		<string>Badge scale is and experimental setting. Ranges 0 to 2 should be alright. Please report any problems to my email: jontelang@gmail.com. Especially if the default value (1) is errorous for some reason.</string>
-		</dict>
+		
 	</array>
 	<key>title</key>				<string>Boover settings</string>
 
