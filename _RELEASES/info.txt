@@ -15,5 +15,6 @@ Configure options from Settings app.
 
 Changelog
 =========
-1.9.1-1
-- iOS7 and arm64 ready
+
+1.9.1-2
+- iOS 7 and arm64 support

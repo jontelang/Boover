@@ -10,3 +10,6 @@ Boover_FRAMEWORKS = UIKit CoreGraphics
 include $(THEOS_MAKE_PATH)/tweak.mk
 SUBPROJECTS += booverpreferences
 include $(THEOS_MAKE_PATH)/aggregate.mk
+
+after-install::
+	install.exec "killall -9 SpringBoard BackBoardd"
