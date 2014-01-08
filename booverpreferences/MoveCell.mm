@@ -7,8 +7,6 @@
     UISlider* slider;
     float percent;
 }
--(UIView*)badgeView;
-//- (NSString *) valueForSpecifier: (PSSpecifier *) specifier ;
 @end
 
 @implementation MoveCell
@@ -53,17 +51,15 @@
                 NSMutableDictionary *prefs = [[NSMutableDictionary alloc] initWithContentsOfFile:@"/var/mobile/Library/Preferences/com.jontelang.boover.plist"];
                 NSLog(@"Loading and setting from PREFS FILE");
                 NSLog(@"%@",prefs);
-                if(prefs){
-                    // if( [prefs objectForKey:@"tempX"] && [prefs objectForKey:@"tempY"] ){
-                    //     x = [[prefs valueForKey:@"tempX"] floatValue];
-                    //     y = [[prefs valueForKey:@"tempY"] floatValue];
-                    // }
-                    // else if 
-                    if ( [prefs objectForKey:@"X"] && [prefs objectForKey:@"Y"] ){
+                if(prefs)
+                {
+                    if ( [prefs objectForKey:@"X"] && [prefs objectForKey:@"Y"] )
+                    {
                         x = [[prefs valueForKey:@"X"] floatValue];
                         y = [[prefs valueForKey:@"Y"] floatValue];   
                     }
-                    if( [prefs objectForKey:@"A"] ){
+                    if( [prefs objectForKey:@"A"] )
+                    {
                         a = [[prefs valueForKey:@"A"] floatValue];
                         percent = a;
                     }
@@ -89,37 +85,13 @@
                 [centerView setAutoresizingMask:UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin];
                 [left addSubview:centerView];
 
-                // [[NSNotificationCenter defaultCenter] addObserver:self
-                //                              selector:@selector(update)
-                //                                  name:@"com.jontelang.boover"
-                //                                object:nil];
-
                 UIView* sliderViewBgBg = [[UIView alloc] initWithFrame:CGRectMake(0,160,320,44)];
                 sliderViewBgBg.backgroundColor = [UIColor whiteColor];
                 if([[[[UIDevice currentDevice] model] lowercaseString] rangeOfString:@"ipad"].location != NSNotFound)sliderViewBgBg.layer.cornerRadius = 5;
                 [left addSubview:sliderViewBgBg];
 
-                // UIView* sliderViewBg = [[UIView alloc] initWithFrame:CGRectMake(20,160+21,320-40,2)];
-                // sliderViewBg.backgroundColor = [UIColor lightGrayColor];
-                // sliderViewBg.layer.cornerRadius = 1;
-                // sliderViewBg.alpha = 0.75f;
-                // [left addSubview:sliderViewBg];
-
-                // sliderView = [[UIView alloc] initWithFrame:CGRectMake(20,160+21,(320-40)/2,2)];
-                // sliderView.backgroundColor = [UIColor colorWithRed:0.0 green:122.0/255.0 blue:1.0 alpha:1.0];
-                // sliderView.layer.cornerRadius = 1;
-                // [left addSubview:sliderView];
-
-                // sliderViewCircle = [[UIView alloc] initWithFrame:CGRectMake(0,0,20,20)];
-                // [sliderViewCircle setCenter:sliderViewBg.center];
-                // sliderViewCircle.backgroundColor = [UIColor colorWithRed:0.0 green:122.0/255.0 blue:1.0 alpha:1.0];
-                // sliderViewCircle.layer.cornerRadius = 10;
-                // [left addSubview:sliderViewCircle];
-
-                 [sliderViewBgBg setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
-                // [sliderViewBg setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
-                // [sliderViewBg setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
-
+                [sliderViewBgBg setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
+                
                 slider = [[UISlider alloc] initWithFrame:CGRectMake(20, 160, 320-40, 44)];
                 [slider setMaximumValue:1];
                 [slider setMinimumValue:0];
@@ -156,19 +128,6 @@
     return 160.0f + 44.0f;
 }
 
--(int)get:(PSSpecifier*)s
-{
-    return 23123;
-}
-
--(void)updateWidth{
-    // [sliderView setFrame:CGRectMake(20,160+21,(self.bounds.size.width-40)*(percent),2)];
-    // float x = 20+sliderView.frame.size.width-10;
-    // if(x<30)x=30;
-    // [sliderViewCircle setCenter:CGPointMake(x,sliderViewCircle.center.y)];
-    // badgeView.alpha = percent;
-}
-
 -(void)pan:(UIPanGestureRecognizer*)rec{
     CGPoint current = [rec locationInView:rec.view];
 
@@ -186,16 +145,7 @@
             [badgeView setCenter:CGPointMake(origin.x+offset.x/4, origin.y+offset.y/2)];
         }
     }
-    else if(current.y >= 160 && current.y < 160+44)
-    {
-        // percent = 1.0f/((self.bounds.size.width-20)/(current.x+10));
-        // NSLog(@"%f",percent);
-        // if(percent>=1.0f)percent=1.0f;
-        // if(percent<=0.04f)percent=0.0f;
-        // NSLog(@"%f",percent);
-        // [self updateWidth];
-    }
-
+    
     if(rec.state==UIGestureRecognizerStateEnded)
     {
         [self saveChanges];
@@ -209,22 +159,11 @@
     if(!prefs){
         prefs = [[NSMutableDictionary alloc] init];
     }
-    NSLog(@"%f",round(100*badgeView.alpha)/100);
-    NSLog(@" setting to PREFS FILE");
-    NSLog(@" %@",prefs);
-    NSLog(@"Setting TEMPx,y,a to %f,%f,%f",badgeView.frame.origin.x,badgeView.frame.origin.y,slider.value);
     [prefs setValue:[NSNumber numberWithFloat:badgeView.frame.origin.x]   forKey:@"tempX"];
     [prefs setValue:[NSNumber numberWithFloat:badgeView.frame.origin.y]   forKey:@"tempY"];
     [prefs setValue:[NSNumber numberWithFloat:slider.value]               forKey:@"tempA"];
     [prefs writeToFile:@"/var/mobile/Library/Preferences/com.jontelang.boover.plist" atomically:YES];
 }
-
--(void)layoutSubviews{
-    [super layoutSubviews];
-    [self updateWidth];
-}
-
--(UIView*)badgeView{return badgeView;}
 
 - (UIImage*) maskImage:(UIImage *)image withMask:(UIImage *)maskImage {
     
