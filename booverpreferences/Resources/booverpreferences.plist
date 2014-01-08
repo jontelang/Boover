@@ -28,6 +28,7 @@
 			<key>enabled</key> 		<true/>
 			<key>default</key> 		<false/>
 			<key>alternateColors</key><true/>
+			<!--key>PostNotification</key> <string>com.jontelang.boover</string-->
 		</dict>
 
 		<!--dict>

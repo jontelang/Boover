@@ -6,7 +6,7 @@ static float BooverA = 1.0f;
 
 
 // @interface SBIconBadgeImage @end
-// @interface SBIconView : UIView @end
+@interface SBIconView : UIView @end
 @interface SBIcon : NSObject @end
 
 // iOS 6
@@ -53,8 +53,10 @@ static float BooverA = 1.0f;
 {
     //%log;
     CGRect o = %orig();
-    if(BooverEnabled){
-        float correction = (float)(o.size.width - 24) / 2.0f;
+    if(BooverEnabled)
+    {
+        // Improve this
+        float correction = (o.size.width - 24) / 2.0f;
         o.origin.x = BooverX - correction;
         o.origin.y = BooverY;
     }
@@ -97,8 +99,9 @@ static float BooverA = 1.0f;
 
 %end
 
-%ctor
+static void loadPrefs()
 {
+    NSLog(@"loadPrefs - Boover");
     NSMutableDictionary *prefs = [[NSMutableDictionary alloc] initWithContentsOfFile:@"/var/mobile/Library/Preferences/com.jontelang.boover.plist"];
     if(prefs){
         if ( [prefs objectForKey:@"isEnabled"] ){
@@ -112,4 +115,11 @@ static float BooverA = 1.0f;
             BooverA = [[prefs valueForKey:@"A"] floatValue];   
         }
     }
+}
+
+%ctor
+{
+    
+    //CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, (CFNotificationCallback)loadPrefs, CFSTR("com.jontelang.boover"), NULL, CFNotificationSuspensionBehaviorCoalesce);
+    loadPrefs();
 }

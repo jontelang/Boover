@@ -1,5 +1,13 @@
 #import <_own_/Preferences5/Preferences.h>
 
+extern "C" void CFNotificationCenterPostNotification (
+   CFNotificationCenterRef center,
+   CFStringRef name,
+   const void *object,
+   CFDictionaryRef userInfo,
+   Boolean deliverImmediately
+);
+
 @interface MoveCell {
     CGPoint startPoint;
     CGPoint origin;
@@ -29,7 +37,7 @@
     if(!prefs){
         prefs = [[NSMutableDictionary alloc] init];
     }
-    NSLog(@"%@",prefs);
+
     [prefs setValue:[NSNumber numberWithFloat:[[prefs valueForKey:@"tempX"] floatValue]] forKey:@"X"];
     [prefs setValue:[NSNumber numberWithFloat:[[prefs valueForKey:@"tempY"] floatValue]] forKey:@"Y"];
     [prefs setValue:[NSNumber numberWithFloat:[[prefs valueForKey:@"tempA"] floatValue]] forKey:@"A"];
@@ -38,13 +46,15 @@
     // [prefs removeObjectForKey:@"tempY"];
     // [prefs removeObjectForKey:@"tempA"];
     [prefs writeToFile:@"/var/mobile/Library/Preferences/com.jontelang.boover.plist" atomically:YES];
-    NSLog(@"%@",prefs);
 
-
-    NSLog(@"respring yo");
     if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 6.0)
     {
         system("killall backboardd");
+          // CFNotificationCenterPostNotification (CFNotificationCenterGetDarwinNotifyCenter(),
+          //  CFSTR("com.jontelang.boover"),
+          //  NULL,
+          //  NULL,
+          //  1);
     }
     else // Under 6.0
     {
