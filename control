@@ -1,7 +1,7 @@
 Package: com.jontelang.boover
 Name: Boover
 Depends: mobilesubstrate
-Version: 1.9
+Version: 2.0
 Architecture: iphoneos-arm
 Description: Total control over your badges.
 Maintainer: Jonathan Winger Lang

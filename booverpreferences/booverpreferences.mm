@@ -1,4 +1,13 @@
-#import <Preferences/Preferences.h>
+#import <_own_/Preferences5/Preferences.h>
+
+@interface MoveCell {
+    CGPoint startPoint;
+    CGPoint origin;
+    UIView *badgeView;
+}
+-(UIView*)badgeView;
+- (NSString *) valueForSpecifier: (PSSpecifier *) specifier ;
+@end
 
 @interface booverpreferencesListController: PSListController {
 }
@@ -12,8 +21,27 @@
     return _specifiers;
 }
 
--(void)respring{
+-(void)respring
+{
+    NSLog(@"Save controller clicked");
 
+    NSMutableDictionary *prefs = [[NSMutableDictionary alloc] initWithContentsOfFile:@"/var/mobile/Library/Preferences/com.jontelang.boover.plist"];
+    if(!prefs){
+        prefs = [[NSMutableDictionary alloc] init];
+    }
+    NSLog(@"%@",prefs);
+    [prefs setValue:[NSNumber numberWithFloat:[[prefs valueForKey:@"tempX"] floatValue]] forKey:@"X"];
+    [prefs setValue:[NSNumber numberWithFloat:[[prefs valueForKey:@"tempY"] floatValue]] forKey:@"Y"];
+    [prefs setValue:[NSNumber numberWithFloat:[[prefs valueForKey:@"tempA"] floatValue]] forKey:@"A"];
+    // NSLog(@"remoce TEMP objects");
+    // [prefs removeObjectForKey:@"tempX"];
+    // [prefs removeObjectForKey:@"tempY"];
+    // [prefs removeObjectForKey:@"tempA"];
+    [prefs writeToFile:@"/var/mobile/Library/Preferences/com.jontelang.boover.plist" atomically:YES];
+    NSLog(@"%@",prefs);
+
+
+    NSLog(@"respring yo");
     if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 6.0)
     {
         system("killall backboardd");
@@ -22,8 +50,6 @@
     {
         system("killall SpringBoard");
     }
-
-
 }
 
 -(void) resetoffsetx {
