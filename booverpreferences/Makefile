@@ -3,11 +3,12 @@ ARCHS = armv7 armv7s arm64
 include theos/makefiles/common.mk
 
 BUNDLE_NAME = booverpreferences
-booverpreferences_FILES = booverpreferences.mm MoveCell.mm
+booverpreferences_FILES = booverpreferences.mm MoveCell.mm 
 booverpreferences_INSTALL_PATH = /Library/PreferenceBundles
 booverpreferences_FRAMEWORKS = UIKit
 booverpreferences_PRIVATE_FRAMEWORKS = Preferences CoreGraphics
 
+include $(THEOS_MAKE_PATH)/custom.mk # For custom prefernce panel
 include $(THEOS_MAKE_PATH)/bundle.mk
 
 internal-stage::

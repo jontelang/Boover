@@ -11,12 +11,6 @@
 		</dict>
 
 		<dict>
-			<key>cell</key>			<string>PSButtonCell</string>
-			<key>label</key>		<string>Save and respring</string>
-			<key>action</key>  		<string>respring</string>
-		</dict>
-
-		<dict>
 			<key>cell</key>			<string>PSSwitchCell</string>
 			<key>id</key> 			<string>EnableBooverToggle</string>
 			<key>defaults</key>		<string>com.jontelang.boover</string>
@@ -26,6 +20,25 @@
 			<key>default</key> 		<false/>
 			<key>alternateColors</key><true/>
 		</dict>
+
+		<dict>
+			<key>cell</key>			<string>PSButtonCell</string>
+			<key>label</key>		<string>Save and respring</string>
+			<key>action</key>  		<string>respring</string>
+		</dict>
+
+		<dict>
+			<key>cell</key>			<string>PSGroupCell</string>
+		</dict>
+		<dict>
+			<key>cell</key>			<string>PSLinkCell</string>
+			<key>label</key>		<string>More..</string>
+			<key>icon</key>			<string>CustomPreferencesControllerInfo.png</string>
+			<key>hasIcon</key>		<true/>
+			<key>detail</key>		<string>CustomPreferencesController</string>
+			<key>id</key> 			<string>com.jontelang.boover</string>
+		</dict>
+
 	</array>
 	<key>title</key>				<string>Boover settings</string>
 
