@@ -140,6 +140,7 @@ static float BooverB = 0;
 
 // iOS 7
 %hook SBDarkeningImageView
+
 -(id)initWithFrame:(CGRect)arg1
 {
     id o = %orig();
@@ -149,6 +150,8 @@ static float BooverB = 0;
     }
     return o;
 }
+
+// I hope this does not disturb winterboard. If it even works on iOS7 badges.
 -(void)setImage:(id)arg1
 {
     if( BooverEnabled==FALSE )
@@ -157,7 +160,7 @@ static float BooverB = 0;
     }
     else
     {
-        //Create a temporary red view
+        //Create a temporary COLORED view
         UIView *bv = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 24, 24)];
         bv.layer.cornerRadius = 12;
 
@@ -185,24 +188,35 @@ static float BooverB = 0;
 // Both
 %hook SBIconView
 
-// iOS 7
+// iOS 7 (and 6, apparently)
 -(CGRect)_frameForAccessoryView
 {
-    //%log;
     CGRect o = %orig();
     if(BooverEnabled)
     {
-        // Improve this
-        float correction = (o.size.width - 24) / 2.0f;
-        o.origin.x = BooverX - correction;
-        o.origin.y = BooverY;
+        // Okay here's the deal. This one actually gets called in iOS 6 also
+        // but I already have so much code inside the 'updateBadge' method 
+        // which grabs ivars and all that jazz. I think this method gets called
+        // way more often and I think (no basis) that it is better to keep the
+        // other code in the other method which only gets called every now and then
+        // 
+        // The next version might remove some iOS5/6 compability. The settings 
+        // already looks like crap in iOS6.
+        // 
+        if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0)
+        {
+            // Improve this
+            float correction = (o.size.width - 24) / 2.0f;
+            o.origin.x = BooverX - correction;
+            o.origin.y = BooverY;
+        }
     }
     return o;
 }
 
 // iOS 5 and 6
--(void)updateBadge{
-    %log;
+-(void)updateBadge
+{
     %orig;
 
     if( BooverEnabled )
@@ -212,15 +226,13 @@ static float BooverB = 0;
         {
             v = MSHookIvar<UIImageView *>(self,  "_accessoryView");
 
-            if(v==nil){return;}
-
             SBIcon *i = MSHookIvar<SBIcon *>(self,  "_icon");
             if( [i isKindOfClass:[%c(SBUserInstalledApplicationIcon) class]] )
             {
                 BOOL hasStash = MSHookIvar<BOOL>(i,  "_shouldHaveSash");
-                if( hasStash )
+                if(hasStash)
                 {
-                    return; // It means they have the "new" sash
+                    return;
                 }
             }
         }
@@ -262,4 +274,5 @@ static float BooverB = 0;
             BooverB = [comps[2] floatValue];
         }
     }
+    [prefs release];
 }

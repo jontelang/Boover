@@ -243,7 +243,7 @@
     }
     else
     {
-        UIAlertView *alert = [[[UIAlertView alloc] initWithTitle:@"Warning" 
+        UIAlertView *alert = [[[UIAlertView alloc] initWithTitle:nil 
             message:@"Changing color is an iOS7+ only feature right now. You can still theme your badges with winterboard though!" 
             delegate:self 
             cancelButtonTitle:@"Ok" 
