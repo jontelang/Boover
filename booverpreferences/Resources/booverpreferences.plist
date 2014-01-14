@@ -30,7 +30,7 @@
 
 		<dict>
 			<key>cell</key>			<string>PSLinkCell</string>
-			<key>label</key>		<string>Position and color</string>
+			<key>label</key>		<string>Position, size and color</string>
 			<key>icon</key>			<string>move.png</string>
 			<key>hasIcon</key>		<true/>
 			<key>detail</key>		<string>MoveController</string>

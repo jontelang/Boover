@@ -12,9 +12,14 @@
     CGPoint origin;
     UIView *badgeView;
     UISlider* slider;
+    UISlider *sliderSize;
+    UISlider *sliderRadius;
+    UISlider *sliderRotate;
     UIView *left;
     UIView *btn;
     UIView *colorPickerView;
+    UILabel *badgeLabel;
+    float space;
 }
 //-(void)build;
 -(void)pick:(UITapGestureRecognizer*)sender;
@@ -29,8 +34,8 @@
 		CGRect viewRect = [UIScreen mainScreen].bounds;
 		UIView *tempView = [[UIView alloc] initWithFrame:viewRect];
 		//tempView.backgroundColor = [UIColor colorWithRed:0.85f green:0.86f blue:0.89f alpha:1.00f];
-		//tempView.backgroundColor = [UIColor colorWithRed:239.0/255.0 green:239.0/255.0 blue:244.0/255.0 alpha:1.0];
-		tempView.backgroundColor = [UIColor whiteColor];
+		tempView.backgroundColor = [UIColor colorWithRed:239.0/255.0 green:239.0/255.0 blue:244.0/255.0 alpha:1.0];
+		//tempView.backgroundColor = [UIColor whiteColor];
 		tempView.clipsToBounds = YES;
 		//tempView.layer.borderWidth = 2;
 		//tempView.layer.borderColor = [UIColor greenColor].CGColor;
@@ -39,6 +44,8 @@
 		[self.view setAutoresizingMask:UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight];
 		
 		float ios7_offset = [[UIDevice currentDevice].systemVersion floatValue] >= 7 ? 64 : 0;
+		space = 35;
+		ios7_offset += space;
 		//float size = 40;
 
 		NSLog(@"build stuff");
@@ -48,7 +55,10 @@
                 float w = [[[[UIDevice currentDevice] model] lowercaseString] rangeOfString:@"ipad"].location == NSNotFound ? 60 : 76;
                 float x = [[[[UIDevice currentDevice] model] lowercaseString] rangeOfString:@"ipad"].location == NSNotFound ? 46 : 62;
                 float y = -10;
-                float a = 1.0f;
+                float alpha = 1;
+                float radius = 1;
+                float degrees = 0;
+                float size = 24;
                 UIColor *color = [UIColor redColor];
                 
                 NSMutableDictionary *prefs = [[NSMutableDictionary alloc] initWithContentsOfFile:@"/var/mobile/Library/Preferences/com.jontelang.boover.plist"];
@@ -61,22 +71,34 @@
                         x = [[prefs valueForKey:@"X"] floatValue];
                         y = [[prefs valueForKey:@"Y"] floatValue];   
                     }
-                    if( [prefs objectForKey:@"A"] )
+                    if( [prefs objectForKey:@"Alpha"] )
                     {
-                        a = [[prefs valueForKey:@"A"] floatValue];
+                        alpha = [[prefs valueForKey:@"Alpha"] floatValue];
                     }
-                    if( [prefs objectForKey:@"C"] )
+                    if( [prefs objectForKey:@"Color"] )
                     {
-                        NSString *c = [prefs valueForKey:@"C"];
+                        NSString *c = [prefs valueForKey:@"Color"];
                         NSArray *comps = [c componentsSeparatedByString:@" "];
                         color = [UIColor colorWithRed:[comps[0] floatValue] green:[comps[1] floatValue] blue:[comps[2] floatValue] alpha:1];
+                    }
+                    if( [prefs objectForKey:@"Size"] )
+                    {
+                        size = [[prefs valueForKey:@"Size"] floatValue];
+                    }
+                    if( [prefs objectForKey:@"Radius"] )
+                    {
+                        radius = [[prefs valueForKey:@"Radius"] floatValue];
+                    }
+                    if( [prefs objectForKey:@"Degrees"] )
+                    {
+                        degrees = [[prefs valueForKey:@"Degrees"] floatValue];
                     }
                 }
 
                 
                 float width = viewRect.size.width;
     
-                left = [[UIView alloc] initWithFrame:CGRectMake(0, ios7_offset, width, viewRect.size.height)];
+                left = [[UIView alloc] initWithFrame:CGRectMake(0, ios7_offset, width, 43.5+160+7+43.5+43.5)]; //lol
                 //left.backgroundColor = [UIColor colorWithRed:239.0/255.0 green:239.0/255.0 blue:244.0/255.0 alpha:1.0];
                 left.backgroundColor = [UIColor whiteColor];
                 [left setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
@@ -111,17 +133,19 @@
                 //badgeView = [[UIImageView alloc] initWithImage:[self imgWithColor:color]];
                 //[badgeView setFrame:CGRectMake(x,y,24,24)];
 
-                badgeView = [[UIView alloc] initWithFrame:CGRectMake(x,y,24,24)];
-                badgeView.layer.cornerRadius = 12;
-                badgeView.alpha = a;
+                badgeView = [[UIView alloc] initWithFrame:CGRectMake(x,y,size,size)];
+                badgeView.layer.cornerRadius = radius;
+                badgeView.alpha = alpha;
                 badgeView.backgroundColor = color;
-                
+
+				badgeView.transform = CGAffineTransformIdentity;
+			    badgeView.transform = CGAffineTransformMakeRotation(degrees * M_PI/180);
 
                 if([[[UIDevice currentDevice] systemVersion] floatValue] < 7.0f){
                     [badgeView release];
                     badgeView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Library/PreferenceBundles/booverpreferences.bundle/SBBadgeBG.png"]];
                     [badgeView setFrame:CGRectMake(x,y,29,31)];
-                    badgeView.alpha = a;
+                    badgeView.alpha = alpha;
                 }
 
                 [icon addSubview:badgeView];
@@ -131,12 +155,12 @@
                 [centerView addSubview:label];
 
                 if([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0f){
-                    UILabel *l = [[UILabel alloc] initWithFrame:badgeView.bounds];
-                    l.text = @"7";
-                    l.textColor = [UIColor whiteColor];
-                    l.backgroundColor = [UIColor clearColor];
-                    l.textAlignment = NSTextAlignmentCenter;
-                    [badgeView addSubview:l];
+                    badgeLabel = [[UILabel alloc] initWithFrame:badgeView.bounds];
+                    badgeLabel.text = @"7";
+                    badgeLabel.textColor = [UIColor whiteColor];
+                    badgeLabel.backgroundColor = [UIColor clearColor];
+                    badgeLabel.textAlignment = NSTextAlignmentCenter;
+                    [badgeView addSubview:badgeLabel];
                 }
                 
                 UIPanGestureRecognizer *pan = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(pan:)];
@@ -223,19 +247,81 @@
                 slider = [[UISlider alloc] initWithFrame:CGRectMake(10+24+10, 0, viewRect.size.width-60, 44)];
                 [slider setMaximumValue:1];
                 [slider setMinimumValue:0];
-                [slider setValue:a];
+                [slider setValue:alpha];
                 [slider setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
-                [slider addTarget:self action:@selector(slider:) forControlEvents:UIControlEventValueChanged];
+                [slider addTarget:self action:@selector(sliderAlpha:) forControlEvents:UIControlEventValueChanged];
                 [slider addTarget:self action:@selector(saveChanges) forControlEvents:(UIControlEventTouchUpOutside|UIControlEventTouchUpInside)];
                 [sliderViewBgBg addSubview:slider];
 
-                // sliderViewBgBg.layer.borderWidth = 1;
-                // centerView.layer.borderWidth = 1;
-                // left.layer.borderWidth = 1;
+                sliderSize = [[UISlider alloc] initWithFrame:CGRectMake(10, 43.5+160+7, viewRect.size.width-20, 44)];
+                [sliderSize setMaximumValue:48];
+                [sliderSize setMinimumValue:24];
+                [sliderSize setValue:size]; // s
+                [sliderSize setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
+                [sliderSize addTarget:self action:@selector(sliderSize:) forControlEvents:UIControlEventValueChanged];
+                [sliderSize addTarget:self action:@selector(saveChanges) forControlEvents:(UIControlEventTouchUpOutside|UIControlEventTouchUpInside)];
+                [left addSubview:sliderSize];
+
+                sliderRadius = [[UISlider alloc] initWithFrame:CGRectMake(10, 43.5+160+7+43.5, viewRect.size.width-20, 44)];
+                [sliderRadius setMaximumValue:1];
+                [sliderRadius setMinimumValue:0];
+                [sliderRadius setValue:radius]; // s
+                [sliderRadius setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
+                [sliderRadius addTarget:self action:@selector(sliderCorners:) forControlEvents:UIControlEventValueChanged];
+                [sliderRadius addTarget:self action:@selector(saveChanges) forControlEvents:(UIControlEventTouchUpOutside|UIControlEventTouchUpInside)];
+                [left addSubview:sliderRadius];
+
+                sliderRotate = [[UISlider alloc] initWithFrame:CGRectMake(10+24+10, 43.5+160+7+43.5+43.5, viewRect.size.width-60, 44)];
+                [sliderRotate setMaximumValue:360];
+                [sliderRotate setMinimumValue:0];
+                [sliderRotate setValue:degrees]; // s
+                [sliderRotate setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
+                [sliderRotate addTarget:self action:@selector(sliderRotate:) forControlEvents:UIControlEventValueChanged];
+                [sliderRotate addTarget:self action:@selector(saveChanges) forControlEvents:(UIControlEventTouchUpOutside|UIControlEventTouchUpInside)];
+                //[left addSubview:sliderRotate];
+
+                //sliderViewBgBg.layer.borderWidth = 1;
+                //centerView.layer.borderWidth = 1;
+                //left.layer.borderWidth = 1;
+
+                // Borders
+                UIColor *borderColor = [UIColor colorWithRed:200.0/255.0 green:199.0/255.0 blue:204.0/255.0 alpha:1.0];
+                UIView *border1 = [[UIView alloc] initWithFrame:CGRectMake(0,0,viewRect.size.width,0.5)];
+                border1.backgroundColor = borderColor;
+                [border1 setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
+                [sliderViewBgBg addSubview:border1];
+                
+                UIView *border2 = [[UIView alloc] initWithFrame:CGRectMake(0,43.5,viewRect.size.width,0.5)];
+                border2.backgroundColor = borderColor;
+                [border2 setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
+                [sliderViewBgBg addSubview:border2];
+                
+                UIView *border3 = [[UIView alloc] initWithFrame:CGRectMake(0,160+43.5+7,viewRect.size.width,0.5)];
+                border3.backgroundColor = borderColor;
+                [border3 setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
+                [left addSubview:border3];
+
+                UIView *border4 = [[UIView alloc] initWithFrame:CGRectMake(0,160+43.5+7+44,viewRect.size.width,0.5)];
+                border4.backgroundColor = borderColor;
+                [border4 setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
+                [left addSubview:border4];
+
+                UIView *border5 = [[UIView alloc] initWithFrame:CGRectMake(0,160+43.5+7+44+43,viewRect.size.width,0.5)];
+                border5.backgroundColor = borderColor;
+                [border5 setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
+                [left addSubview:border5];
+
+                //left.backgroundColor = [[UIColor redColor] colorWithAlphaComponent:0.2f];
+                //fsliderSize.userInteractionEnabled = YES;
+
         NSLog(@"done building");
+
+        [self sliderRotate:nil];
+        [self s];
 }
 
--(void)open{
+-(void)open
+{
     NSLog(@"openn");
 
     if([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0f)
@@ -271,7 +357,6 @@
     }
 }
 
-
 -(void)pick:(UITapGestureRecognizer*)sender{
     int found = 0;
     for (int i = 0; i < [sender.view.subviews count]; i++) {
@@ -287,9 +372,47 @@
 }
 
 
--(void)slider:(id)sender
+-(void)sliderAlpha:(id)sender
 {
     badgeView.alpha = slider.value;
+}
+
+-(void)sliderSize:(id)sender
+{
+	[self s];
+}
+
+-(void)sliderCorners:(id)sender
+{
+	[self s];
+}
+
+-(void)sliderRotate:(id)sender
+{
+	badgeView.transform = CGAffineTransformIdentity;
+    badgeView.transform = CGAffineTransformMakeRotation(sliderRotate.value * M_PI/180);
+    NSLog(@"cornerDegrees: %f",sliderRotate.value);
+}
+
+-(void)s
+{	
+	CGAffineTransform savedTransform = badgeView.transform;
+
+	badgeView.transform = CGAffineTransformIdentity;
+
+	CGPoint center   = badgeView.center; 
+	CGRect rect      = badgeView.frame;
+	rect.size.width  = sliderSize.value;
+	rect.size.height = sliderSize.value;
+	[badgeView setFrame:rect];
+    [badgeView setCenter:center];
+    [badgeLabel setFrame:badgeView.bounds];
+
+    badgeView.layer.cornerRadius = (sliderSize.value/2)*sliderRadius.value;
+    NSLog(@"cornerRadius: %f",badgeView.layer.cornerRadius);
+    NSLog(@"cornerSize: %f",sliderSize.value);
+
+    badgeView.transform = savedTransform;
 }
 
 -(void)update
@@ -307,7 +430,7 @@
 
     CGPoint current = [rec locationInView:rec.view];
 
-    if(current.y > 44)
+    if(current.y > 44 && current.y < 44+160)
     {
         if (rec.state==UIGestureRecognizerStateBegan)
         {
@@ -318,7 +441,7 @@
         {
             CGPoint currentPoint = [rec locationInView:rec.view];
             CGPoint offset = CGPointMake(currentPoint.x-startPoint.x, currentPoint.y-startPoint.y);
-            [badgeView setCenter:CGPointMake(origin.x+offset.x/4, origin.y+offset.y/2)];
+            [badgeView setCenter:CGPointMake(origin.x+offset.x/5, origin.y+offset.y/5)];
         }
     }
     
@@ -335,14 +458,17 @@
     if(!prefs){
         prefs = [[NSMutableDictionary alloc] init];
     }
-    [prefs setValue:[NSNumber numberWithFloat:badgeView.frame.origin.x]   forKey:@"tempX"];
-    [prefs setValue:[NSNumber numberWithFloat:badgeView.frame.origin.y]   forKey:@"tempY"];
-    [prefs setValue:[NSNumber numberWithFloat:slider.value]               forKey:@"tempA"];
+    [prefs setValue:[NSNumber numberWithFloat:badgeView.frame.origin.x]     forKey:@"tempX"];
+    [prefs setValue:[NSNumber numberWithFloat:badgeView.frame.origin.y]     forKey:@"tempY"];
+    [prefs setValue:[NSNumber numberWithFloat:slider.value]                 forKey:@"tempAlpha"];
+    [prefs setValue:[NSNumber numberWithFloat:sliderSize.value]             forKey:@"tempSize"];
+    [prefs setValue:[NSNumber numberWithFloat:sliderRadius.value]  			forKey:@"tempRadius"];
+    [prefs setValue:[NSNumber numberWithFloat:sliderRotate.value]           forKey:@"tempDegrees"];
 
     // Get the colors
     CGFloat r,g,b,a;
     [badgeView.backgroundColor getRed:&r green:&g blue:&b alpha:&a];
-    [prefs setValue:[NSString stringWithFormat:@"%f %f %f",r,g,b] forKey:@"tempC"];
+    [prefs setValue:[NSString stringWithFormat:@"%f %f %f",r,g,b] forKey:@"tempColor"];
 
     [prefs writeToFile:@"/var/mobile/Library/Preferences/com.jontelang.boover.plist" atomically:YES];
 }

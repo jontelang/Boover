@@ -322,12 +322,12 @@
     }
     [prefs setValue:[NSNumber numberWithFloat:badgeView.frame.origin.x]   forKey:@"tempX"];
     [prefs setValue:[NSNumber numberWithFloat:badgeView.frame.origin.y]   forKey:@"tempY"];
-    [prefs setValue:[NSNumber numberWithFloat:slider.value]               forKey:@"tempA"];
+    [prefs setValue:[NSNumber numberWithFloat:slider.value]               forKey:@"tempAlpha"];
 
     // Get the colors
     CGFloat r,g,b,a;
     [badgeView.backgroundColor getRed:&r green:&g blue:&b alpha:&a];
-    [prefs setValue:[NSString stringWithFormat:@"%f %f %f",r,g,b] forKey:@"tempC"];
+    [prefs setValue:[NSString stringWithFormat:@"%f %f %f",r,g,b] forKey:@"tempColor"];
 
     [prefs writeToFile:@"/var/mobile/Library/Preferences/com.jontelang.boover.plist" atomically:YES];
 }

@@ -1,10 +1,13 @@
 static BOOL  BooverEnabled = NO;
 static float BooverX = 0;
 static float BooverY = 0;
-static float BooverA = 1.0f;
+static float BooverAlpha = 1.0f;
 static float BooverR = 1;
 static float BooverG = 0;
 static float BooverB = 0;
+static float BooverSize = 24;
+static float BooverRadius = 12;
+static float BooverDegrees = 0;
 
 // @interface SBIconBadgeImage @end
 @interface SBIconView : UIView @end
@@ -18,7 +21,7 @@ static float BooverB = 0;
     id o = %orig();
     if(BooverEnabled)
     {
-        ((UIView*)o).alpha = BooverA;
+        ((UIView*)o).alpha = BooverAlpha;
     }
     return o;
 }
@@ -33,12 +36,16 @@ static float BooverB = 0;
     else
     {
         //Create a temporary COLORED view
-        UIView *bv = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 24, 24)];
-        bv.layer.cornerRadius = 12;
+        UIView *bv = [[UIView alloc] initWithFrame:CGRectMake(0, 0, BooverSize, BooverSize)];
+        bv.layer.cornerRadius = ((BooverSize/2)*BooverRadius);
 
         // Set the color
         bv.backgroundColor = [UIColor colorWithRed:BooverR green:BooverG blue:BooverB alpha:1];
         
+        //
+        //bv.transform = CGAffineTransformIdentity;
+        //bv.transform = CGAffineTransformMakeRotation(50 * M_PI/180);
+
         // Start a new image context
         UIGraphicsBeginImageContextWithOptions(bv.frame.size, NO, [UIScreen mainScreen].scale);
         
@@ -60,7 +67,7 @@ static float BooverB = 0;
 // Both
 %hook SBIconView
 
-// iOS 7 (and 6, apparently)
+//iOS 7 (and 6, apparently)
 -(CGRect)_frameForAccessoryView
 {
     CGRect o = %orig();
@@ -78,9 +85,13 @@ static float BooverB = 0;
         if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0)
         {
             // Improve this
-            float correction = (o.size.width - 24) / 2.0f;
-            o.origin.x = BooverX - correction;
+            float correction = (o.size.width > BooverSize) ? o.size.width - 24 : 0;
+
+            o.origin.x = BooverX - (correction/2);
             o.origin.y = BooverY;
+
+            o.size.width  = BooverSize + correction;
+            o.size.height = BooverSize;
         }
     }
     return o;
@@ -116,7 +127,7 @@ static float BooverB = 0;
         // -1 up because the images seems to be 29x31 so 31-29=2 /2 = 1
         float correction = (v.bounds.size.width - 29) / 2.0f; 
         [v setFrame:CGRectMake( BooverX - correction - 1, BooverY - 2, v.bounds.size.width, v.bounds.size.height)];
-        v.alpha = BooverA;
+        v.alpha = BooverAlpha;
     }
 }
 
@@ -127,6 +138,7 @@ static float BooverB = 0;
 {
     NSLog(@"loadPrefs - Boover");
     NSMutableDictionary *prefs = [[NSMutableDictionary alloc] initWithContentsOfFile:@"/var/mobile/Library/Preferences/com.jontelang.boover.plist"];
+    NSLog(@"%@",prefs);
     if(prefs){
         if ( [prefs objectForKey:@"isEnabled"] ){
             BooverEnabled = [[prefs valueForKey:@"isEnabled"] boolValue];
@@ -135,15 +147,24 @@ static float BooverB = 0;
             BooverX = [[prefs valueForKey:@"X"] floatValue];
             BooverY = [[prefs valueForKey:@"Y"] floatValue];   
         }
-        if ( [prefs objectForKey:@"A"] ){
-            BooverA = [[prefs valueForKey:@"A"] floatValue];   
+        if ( [prefs objectForKey:@"Alpha"] ){
+            BooverAlpha = [[prefs valueForKey:@"Alpha"] floatValue];   
         }
-        if ( [prefs objectForKey:@"C"] ){
-            NSString *tempC = [prefs valueForKey:@"C"];   
+        if ( [prefs objectForKey:@"Color"] ){
+            NSString *tempC = [prefs valueForKey:@"Color"];   
             NSArray *comps = [tempC componentsSeparatedByString:@" "];
             BooverR = [comps[0] floatValue];
             BooverG = [comps[1] floatValue];
             BooverB = [comps[2] floatValue];
+        }
+        if ( [prefs objectForKey:@"Size"] ){
+            BooverSize = [[prefs valueForKey:@"Size"] floatValue];   
+        }
+        if ( [prefs objectForKey:@"Radius"] ){
+            BooverRadius = [[prefs valueForKey:@"Radius"] floatValue];  
+        }
+        if ( [prefs objectForKey:@"Degrees"] ){
+            BooverDegrees = [[prefs valueForKey:@"Degrees"] floatValue];   
         }
     }
     [prefs release];

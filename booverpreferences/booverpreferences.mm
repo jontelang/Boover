@@ -24,8 +24,11 @@
     // save.. Then again, this comment probably took me longer to write than adding a fix soo...
     [prefs setValue:[NSNumber numberWithFloat:[[prefs valueForKey:@"tempX"] floatValue]] forKey:@"X"];
     [prefs setValue:[NSNumber numberWithFloat:[[prefs valueForKey:@"tempY"] floatValue]] forKey:@"Y"];
-    [prefs setValue:[NSNumber numberWithFloat:[[prefs valueForKey:@"tempA"] floatValue]] forKey:@"A"];
-    [prefs setValue:[prefs valueForKey:@"tempC"] forKey:@"C"];
+    [prefs setValue:[NSNumber numberWithFloat:[[prefs valueForKey:@"tempAlpha"] floatValue]] forKey:@"Alpha"];
+    [prefs setValue:[NSNumber numberWithFloat:[[prefs valueForKey:@"tempSize"] floatValue]] forKey:@"Size"];
+    [prefs setValue:[NSNumber numberWithFloat:[[prefs valueForKey:@"tempRadius"] floatValue]] forKey:@"Radius"];
+    [prefs setValue:[NSNumber numberWithFloat:[[prefs valueForKey:@"tempDegrees"] floatValue]] forKey:@"Degrees"];
+    [prefs setValue:[prefs valueForKey:@"tempColor"] forKey:@"Color"];
     [prefs writeToFile:@"/var/mobile/Library/Preferences/com.jontelang.boover.plist" atomically:YES];
 
     if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 6.0)
