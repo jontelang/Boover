@@ -7,9 +7,16 @@
 
 		<dict>
 			<key>cell</key> 				<string>PSGroupCell</string>
-			<key>headerCellClass</key>		<string>MoveCell</string>
+		</dict>
+		<dict>
+			<key>cell</key>			<string>PSButtonCell</string>
+			<key>label</key>		<string>Save and respring</string>
+			<key>action</key>  		<string>respring</string>
 		</dict>
 
+		<dict>
+			<key>cell</key> 				<string>PSGroupCell</string>
+		</dict>
 		<dict>
 			<key>cell</key>			<string>PSSwitchCell</string>
 			<key>id</key> 			<string>EnableBooverToggle</string>
@@ -22,10 +29,14 @@
 		</dict>
 
 		<dict>
-			<key>cell</key>			<string>PSButtonCell</string>
-			<key>label</key>		<string>Save and respring</string>
-			<key>action</key>  		<string>respring</string>
+			<key>cell</key>			<string>PSLinkCell</string>
+			<key>label</key>		<string>Position and color</string>
+			<key>icon</key>			<string>move.png</string>
+			<key>hasIcon</key>		<true/>
+			<key>detail</key>		<string>MoveController</string>
+			<!--key>id</key> 			<string>com.jontelang.boover</string-->
 		</dict>
+
 
 		<dict>
 			<key>cell</key>			<string>PSLinkCell</string>

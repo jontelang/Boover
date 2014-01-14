@@ -1,8 +1,14 @@
-#include "_own_/Preferences5/Preferences.h"
-//#import <QuartzCore/QuartzCore.h>
+#import <Preferences/Preferences.h>
 
-@interface MoveCell : PSTableCell <PreferencesTableCustomView> {
-    CGPoint startPoint;
+
+@interface PSListController (ddd)
+-(void)loadView;
+-(void)viewDidLoad;
+-(void)setView:(UIView*)v;
+@end
+
+@interface MoveController : PSListController <UIAlertViewDelegate> {
+	CGPoint startPoint;
     CGPoint origin;
     UIView *badgeView;
     UISlider* slider;
@@ -10,66 +16,35 @@
     UIView *btn;
     UIView *colorPickerView;
 }
--(void)build;
+//-(void)build;
 -(void)pick:(UITapGestureRecognizer*)sender;
 @end
 
-@implementation MoveCell
-- (id)initWithSpecifier:(PSSpecifier *)specifier
+@implementation MoveController
+
+-(void)loadView
 {
-    NSLog(@"SPECIFIER: %@", specifier);
+	NSLog(@"LOADVIEW");
+	[super loadView];
+		CGRect viewRect = [UIScreen mainScreen].bounds;
+		UIView *tempView = [[UIView alloc] initWithFrame:viewRect];
+		//tempView.backgroundColor = [UIColor colorWithRed:0.85f green:0.86f blue:0.89f alpha:1.00f];
+		//tempView.backgroundColor = [UIColor colorWithRed:239.0/255.0 green:239.0/255.0 blue:244.0/255.0 alpha:1.0];
+		tempView.backgroundColor = [UIColor whiteColor];
+		tempView.clipsToBounds = YES;
+		//tempView.layer.borderWidth = 2;
+		//tempView.layer.borderColor = [UIColor greenColor].CGColor;
+		self.view = tempView;
+		[self.view setAutoresizesSubviews:YES];
+		[self.view setAutoresizingMask:UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight];
+		
+		float ios7_offset = [[UIDevice currentDevice].systemVersion floatValue] >= 7 ? 64 : 0;
+		//float size = 40;
 
-        self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"Cell" specifier:specifier];
-        if (self) {
-            [self build];
-            NSLog(@"SELF -- %@",self);
-            NSLog(@"SELf height: %f",[self preferredHeightForWidth:320]);
-        }
-        return self;
-}
+		NSLog(@"build stuff");
 
--(void)pick:(UITapGestureRecognizer*)sender{
-    int found = 0;
-    for (int i = 0; i < [sender.view.subviews count]; i++) {
-        if( CGRectContainsPoint(((UIView*)[sender.view.subviews objectAtIndex:i]).frame, [sender locationInView:sender.view]) ){
-            btn.backgroundColor = ((UIView*)[sender.view.subviews objectAtIndex:i]).backgroundColor;
-            badgeView.backgroundColor = btn.backgroundColor;
-            found++;
-            [self saveChanges]; // I hope people don't spam
-            break;
-        }
-    }
-    if(found==0){[self open];}
-}
 
--(void)build
-{
-            NSLog(@"build stuff");
-            self.backgroundColor = [UIColor colorWithRed:239.0/255.0 green:239.0/255.0 blue:244.0/255.0 alpha:1.0];
-
-                [self setAutoresizesSubviews:YES];
-                [self setAutoresizingMask:UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight];
-
-                float width = 320;
-    
-                left = [[UIView alloc] initWithFrame:CGRectMake(0, 0, width, 160+44)];
-                left.backgroundColor = [UIColor colorWithRed:239.0/255.0 green:239.0/255.0 blue:244.0/255.0 alpha:1.0];
-                [left setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
-                [self addSubview:left];
-
-                UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(160,0,160,160)];
-                [label setText:@"Drag here"];
-                [label setTextAlignment:NSTextAlignmentCenter];
-                [label setTextColor:[UIColor lightGrayColor]];
-                label.backgroundColor = [UIColor clearColor];
-                
-                UIImageView *icon = [[UIImageView alloc] initWithImage:
-                                                            [self maskImage:
-                                                                    [UIImage imageWithContentsOfFile:@"/Library/PreferenceBundles/booverpreferences.bundle/i.png"] 
-                                                                withMask:
-                                                                    [UIImage imageWithContentsOfFile:@"/Library/PreferenceBundles/booverpreferences.bundle/m.png"]]];
-
-                // Defaults
+				// Defaults
                 float w = [[[[UIDevice currentDevice] model] lowercaseString] rangeOfString:@"ipad"].location == NSNotFound ? 60 : 76;
                 float x = [[[[UIDevice currentDevice] model] lowercaseString] rangeOfString:@"ipad"].location == NSNotFound ? 46 : 62;
                 float y = -10;
@@ -98,10 +73,40 @@
                     }
                 }
 
+                
+                float width = viewRect.size.width;
+    
+                left = [[UIView alloc] initWithFrame:CGRectMake(0, ios7_offset, width, viewRect.size.height)];
+                //left.backgroundColor = [UIColor colorWithRed:239.0/255.0 green:239.0/255.0 blue:244.0/255.0 alpha:1.0];
+                left.backgroundColor = [UIColor whiteColor];
+                [left setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
+                [self.view addSubview:left];
 
-                [icon setFrame:CGRectMake(0, 0, w, w)];
-                [icon setCenter:CGPointMake(160/2,160/2)];
+                UIView* centerView = [[UIView alloc] initWithFrame:CGRectMake(0,0,w*2,160)];
+                [centerView setCenter:CGPointMake(viewRect.size.width/2,160/2+44)];
+                [centerView setAutoresizingMask:(UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin)];
+                [left addSubview:centerView];
+                
+                UIImageView *icon = [[UIImageView alloc] initWithImage:
+                                                            [self maskImage:
+                                                                    [UIImage imageWithContentsOfFile:@"/Library/PreferenceBundles/booverpreferences.bundle/i.png"] 
+                                                                withMask:
+                                                                    [UIImage imageWithContentsOfFile:@"/Library/PreferenceBundles/booverpreferences.bundle/m.png"]]];
+
+                
+
+
+                [icon setFrame:CGRectMake(-w/2, (160/2)-(w/2), w, w)];
+                [icon setAutoresizingMask:(UIViewAutoresizingFlexibleRightMargin)];
                 origin = icon.center;
+
+
+                UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(w,(160/2)-(w/2),w+w,w)];
+                [label setAutoresizingMask:(UIViewAutoresizingFlexibleRightMargin)];
+                [label setText:@"Drag here"];
+                [label setTextAlignment:NSTextAlignmentCenter];
+                [label setTextColor:[UIColor lightGrayColor]];
+                label.backgroundColor = [UIColor clearColor];
 
                 //badgeView = [[UIImageView alloc] initWithImage:[self imgWithColor:color]];
                 //[badgeView setFrame:CGRectMake(x,y,24,24)];
@@ -121,6 +126,10 @@
 
                 [icon addSubview:badgeView];
 
+
+                [centerView addSubview:icon];
+                [centerView addSubview:label];
+
                 if([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0f){
                     UILabel *l = [[UILabel alloc] initWithFrame:badgeView.bounds];
                     l.text = @"7";
@@ -133,22 +142,19 @@
                 UIPanGestureRecognizer *pan = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(pan:)];
                 [left addGestureRecognizer:pan];
 
-                UIView* centerView = [[UIView alloc] initWithFrame:CGRectMake(0,0,320,160)];
-                [centerView addSubview:icon];
-                [centerView addSubview:label];
-                [centerView setAutoresizingMask:UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin];
-                [left addSubview:centerView];
+                
 
-    colorPickerView = [[UIView alloc] initWithFrame:CGRectMake(10, 10, 300, 140)];
+    colorPickerView = [[UIView alloc] initWithFrame:CGRectMake(10, 44+10, 300, 140)];
     colorPickerView.backgroundColor = [UIColor blackColor];
     colorPickerView.alpha = 0.75;
     colorPickerView.layer.cornerRadius = 5;
     colorPickerView.hidden = YES;
     [left addSubview:colorPickerView];
 
-                UIView* sliderViewBgBg = [[UIView alloc] initWithFrame:CGRectMake(0,160,320,44)];
+                UIView* sliderViewBgBg = [[UIView alloc] initWithFrame:CGRectMake(0,0,viewRect.size.width,44)];
                 sliderViewBgBg.backgroundColor = [UIColor whiteColor];
                 if([[[[UIDevice currentDevice] model] lowercaseString] rangeOfString:@"ipad"].location != NSNotFound)sliderViewBgBg.layer.cornerRadius = 5;
+                [sliderViewBgBg setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
                 [left addSubview:sliderViewBgBg];
 
                 [sliderViewBgBg setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
@@ -214,14 +220,18 @@
     UITapGestureRecognizer *chosecolor = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(pick:)];
     [colorPickerView addGestureRecognizer:chosecolor];
 
-                slider = [[UISlider alloc] initWithFrame:CGRectMake(10+24+10, 160, 320-60, 44)];
+                slider = [[UISlider alloc] initWithFrame:CGRectMake(10+24+10, 0, viewRect.size.width-60, 44)];
                 [slider setMaximumValue:1];
                 [slider setMinimumValue:0];
                 [slider setValue:a];
                 [slider setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
                 [slider addTarget:self action:@selector(slider:) forControlEvents:UIControlEventValueChanged];
                 [slider addTarget:self action:@selector(saveChanges) forControlEvents:(UIControlEventTouchUpOutside|UIControlEventTouchUpInside)];
-                [self addSubview:slider];
+                [sliderViewBgBg addSubview:slider];
+
+                // sliderViewBgBg.layer.borderWidth = 1;
+                // centerView.layer.borderWidth = 1;
+                // left.layer.borderWidth = 1;
         NSLog(@"done building");
 }
 
@@ -261,6 +271,22 @@
     }
 }
 
+
+-(void)pick:(UITapGestureRecognizer*)sender{
+    int found = 0;
+    for (int i = 0; i < [sender.view.subviews count]; i++) {
+        if( CGRectContainsPoint(((UIView*)[sender.view.subviews objectAtIndex:i]).frame, [sender locationInView:sender.view]) ){
+            btn.backgroundColor = ((UIView*)[sender.view.subviews objectAtIndex:i]).backgroundColor;
+            badgeView.backgroundColor = btn.backgroundColor;
+            found++;
+            [self saveChanges]; // I hope people don't spam
+            break;
+        }
+    }
+    if(found==0){[self open];}
+}
+
+
 -(void)slider:(id)sender
 {
     badgeView.alpha = slider.value;
@@ -275,24 +301,13 @@
                                    44)];
 }
 
-- (float)preferredHeightForWidth:(float)arg1
-{
-    // Return a custom cell height.
-    if([[[[UIDevice currentDevice] model] lowercaseString] rangeOfString:@"ipad"].location != NSNotFound){
-        NSLog(@"height is -- 160+44+35");
-        return 160+44+35;
-    }
-    NSLog(@"height is -- 204");
-    return 204;
-}
-
 -(void)pan:(UIPanGestureRecognizer*)rec
 {
     if(!colorPickerView.hidden){[self open];} // Don't mind me.
 
     CGPoint current = [rec locationInView:rec.view];
 
-    if(current.y < 160)
+    if(current.y > 44)
     {
         if (rec.state==UIGestureRecognizerStateBegan)
         {
@@ -348,69 +363,17 @@
     
 }
 
-// - (UIImage *) imgWithColor:(UIColor*)color
-// {
-//     // Create a temporary red view
-//     UIView *bv = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 24, 24)];
-//     bv.backgroundColor = color;
-//     bv.layer.cornerRadius = 12;
+- (id)specifiers {
+	if(_specifiers == nil) {
+		_specifiers = [[self loadSpecifiersFromPlistName:@"MoveController" target:self] retain];
+		NSLog(@"specifiers");
+	}
+	return _specifiers;
+}
 
-//     UILabel *l = [[UILabel alloc] initWithFrame:bv.bounds];
-//     l.text = @"7";
-//     l.textColor = [UIColor whiteColor];
-//     l.textAlignment = NSTextAlignmentCenter;
-//     [bv addSubview:l];
-    
-//     // Start a new image context
-//     UIGraphicsBeginImageContextWithOptions(bv.bounds.size, NO, 0.0);
-    
-//     // // Copy view into an image
-//     [bv.layer renderInContext:UIGraphicsGetCurrentContext()];
-    
-//     // // load the image
-//     UIImage *img = UIGraphicsGetImageFromCurrentImageContext();
-    
-//     // // Step one done
-//     UIGraphicsEndImageContext();
-    
-//     // // Begin a new image context, to draw our colored image onto
-//     // UIGraphicsBeginImageContextWithOptions(img.size, NO, [UIScreen mainScreen].scale);
-    
-//     // // get a reference to that context we created
-//     // CGContextRef context = UIGraphicsGetCurrentContext();
-    
-//     // // translate/flip the graphics context (for transforming from CG* coords to UI* coords
-//     // CGContextTranslateCTM(context, 0, img.size.height);
-//     // CGContextScaleCTM(context, 1.0, -1.0);
-    
-//     // // ??
-//     // CGRect rect = CGRectMake(0, 0, img.size.width, img.size.height);
-    
-//     // // First make white
-//     // [[UIColor whiteColor] setFill];
-    
-//     // // set the blend mode to color burn, and the original image
-//     // CGContextSetBlendMode(context, kCGBlendModeNormal);
-//     // CGContextDrawImage(context, rect, img.CGImage);
 
-//     // // First make then new
-//     // [color setFill];
-    
-//     // // set the blend mode to color burn, and the original image
-//     // CGContextSetBlendMode(context, kCGBlendModeLighten);
-//     // CGContextDrawImage(context, rect, img.CGImage);
-    
-//     // // set a mask that matches the shape of the image, then draw (color burn) a colored rectangle
-//     // CGContextClipToMask(context, rect, img.CGImage);
-//     // CGContextAddRect(context, rect);
-//     // CGContextDrawPath(context,kCGPathFill);
-    
-//     // // generate a new UIImage from the graphics context we drew onto
-//     // UIImage *coloredImg = UIGraphicsGetImageFromCurrentImageContext();
-    
-//     // // Fin.
-//     // UIGraphicsEndImageContext();
-    
-//     return img;
-// }
+
+
 @end
+
+// vim:ft=objc

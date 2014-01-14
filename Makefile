@@ -1,4 +1,4 @@
-export TARGET=:clang 
+TARGET=:clang 
 ARCHS = armv7 armv7s arm64
 
 include theos/makefiles/common.mk
