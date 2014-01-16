@@ -85,17 +85,19 @@ static float BooverDegrees = 0;
         if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0)
         {
             // Improve this
-            float correction = (o.size.width > BooverSize) ? o.size.width - 24 : 0;
-
+            float bigger  = (o.size.width > BooverSize) ? o.size.width : BooverSize;
+            float smaller = (o.size.width > BooverSize) ? BooverSize : o.size.width;
+            float correction = bigger - smaller;
             o.origin.x = BooverX - (correction/2);
             o.origin.y = BooverY;
-
-            o.size.width  = BooverSize + correction;
+            o.size.width  = bigger;
             o.size.height = BooverSize;
         }
     }
     return o;
 }
+
+//-(void)_updateAccessoryViewWithAnimation:(BOOL)arg1{}
 
 // iOS 5 and 6
 -(void)updateBadge

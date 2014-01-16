@@ -254,7 +254,7 @@
                 [sliderViewBgBg addSubview:slider];
 
                 sliderSize = [[UISlider alloc] initWithFrame:CGRectMake(10, 43.5+160+7, viewRect.size.width-20, 44)];
-                [sliderSize setMaximumValue:48];
+                [sliderSize setMaximumValue:72];
                 [sliderSize setMinimumValue:24];
                 [sliderSize setValue:size]; // s
                 [sliderSize setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
