@@ -1,23 +1,47 @@
-static BOOL  BooverEnabled = NO;
-static float BooverX = 0;
-static float BooverY = 0;
-static float BooverAlpha = 1.0f;
-static float BooverR = 1;
-static float BooverG = 0;
-static float BooverB = 0;
-static float BooverSize = 24;
-static float BooverRadius = 12;
-static float BooverDegrees = 0;
+static BOOL  BooverEnabled    = NO;
+static float BooverX          = 0;
+static float BooverY          = 0;
+static float BooverR          = 1;
+static float BooverG          = 0;
+static float BooverB          = 0;
+static float BooverSize       = 24;
+static float BooverAlpha      = 1.0f;
+static float BooverRadius     = 12;
+static float BooverDegrees    = 0;
+static bool  BooverHasBorder  = NO;
+static float BooverTempColorR = 0;
+static float BooverTempColorG = 0;
+static float BooverTempColorB = 0;
+static float BooverGotColorFromIcon       = NO;
+static float BooverShouldGetColorFromIcon = NO;
 
-// @interface SBIconBadgeImage @end
 @interface SBIconView : UIView @end
-@interface SBIcon : NSObject @end
+@interface SBIcon : NSObject 
+- (id)displayName;
+- (id)getIconImage:(int)arg1;
+- (id)nodeIdentifier;
+@end
+@interface SBDarkeningImageView : UIView 
+- (void)setImage:(id)arg1;
+@end
+@interface SBIconBadgeView : UIView
+{
+  SBDarkeningImageView *_backgroundView;
+}
+- (void)setDominantColor:(UIImage*)image;
+- (void)getAndSetColor:(UIImage*)arg1;
+- (void)makeImage;
+@end
+@interface SBIconAccessoryImage : UIImage @end
+
+
 
 // iOS 7
 %hook SBDarkeningImageView
 
 -(id)initWithFrame:(CGRect)arg1
 {
+    %log;
     id o = %orig();
     if(BooverEnabled)
     {
@@ -26,42 +50,6 @@ static float BooverDegrees = 0;
     return o;
 }
 
-// I hope this does not disturb winterboard. If it even works on iOS7 badges.
--(void)setImage:(id)arg1
-{
-    if( BooverEnabled==FALSE )
-    {
-        %orig();
-    }
-    else
-    {
-        //Create a temporary COLORED view
-        UIView *bv = [[UIView alloc] initWithFrame:CGRectMake(0, 0, BooverSize, BooverSize)];
-        bv.layer.cornerRadius = ((BooverSize/2)*BooverRadius);
-
-        // Set the color
-        bv.backgroundColor = [UIColor colorWithRed:BooverR green:BooverG blue:BooverB alpha:1];
-        
-        //
-        //bv.transform = CGAffineTransformIdentity;
-        //bv.transform = CGAffineTransformMakeRotation(50 * M_PI/180);
-
-        // Start a new image context
-        UIGraphicsBeginImageContextWithOptions(bv.frame.size, NO, [UIScreen mainScreen].scale);
-        
-        // // Copy view into an image
-        [bv.layer renderInContext:UIGraphicsGetCurrentContext()];
-        
-        // // load the image
-        UIImage *img = UIGraphicsGetImageFromCurrentImageContext();
-        
-        // // Step one done
-        UIGraphicsEndImageContext();
-
-        // return
-        %orig(img);
-    }
-}
 %end
 
 // Both
@@ -70,6 +58,7 @@ static float BooverDegrees = 0;
 //iOS 7 (and 6, apparently)
 -(CGRect)_frameForAccessoryView
 {
+    %log;
     CGRect o = %orig();
     if(BooverEnabled)
     {
@@ -85,19 +74,19 @@ static float BooverDegrees = 0;
         if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0)
         {
             // Improve this
-            float bigger  = (o.size.width > BooverSize) ? o.size.width : BooverSize;
-            float smaller = (o.size.width > BooverSize) ? BooverSize : o.size.width;
-            float correction = bigger - smaller;
-            o.origin.x = BooverX - (correction/2);
+            float biggerW  = (o.size.width > BooverSize) ? o.size.width : BooverSize;
+            float smallerW = (o.size.width > BooverSize) ? BooverSize : o.size.width;
+            float correctionW = biggerW - smallerW;
+            o.origin.x = BooverX - (correctionW/2);
             o.origin.y = BooverY;
-            o.size.width  = bigger;
+            o.size.width  = biggerW;
+            //float biggerH  = (o.size.height > BooverSize) ? o.size.height : BooverSize;
             o.size.height = BooverSize;
         }
     }
+    NSLog(@"Boover - _frameForAccessoryView returns %@",NSStringFromCGRect(o));
     return o;
 }
-
-//-(void)_updateAccessoryViewWithAnimation:(BOOL)arg1{}
 
 // iOS 5 and 6
 -(void)updateBadge
@@ -127,20 +116,25 @@ static float BooverDegrees = 0;
         }
         
         // -1 up because the images seems to be 29x31 so 31-29=2 /2 = 1
-        float correction = (v.bounds.size.width - 29) / 2.0f; 
-        [v setFrame:CGRectMake( BooverX - correction - 1, BooverY - 2, v.bounds.size.width, v.bounds.size.height)];
-        v.alpha = BooverAlpha;
+        if(v.bounds.size.height!=0&&v.bounds.size.width!=0){
+            NSLog(@"Boover - --------- %@",NSStringFromCGRect(v.bounds));
+            float h = BooverSize;
+            float w = BooverSize * (v.bounds.size.width/v.bounds.size.height);
+            float correctionW = (w>h)?w-h:h-w;
+            float x = BooverX - (correctionW/2);
+            float y = BooverY - 2;
+            [v setFrame:CGRectMake( x, y, w, h)];
+            v.alpha = BooverAlpha;
+        }
     }
 }
-
 %end
-
 
 %ctor
 {
-    NSLog(@"loadPrefs - Boover");
+    NSLog(@"Boover - loadPrefs - Boover");
     NSMutableDictionary *prefs = [[NSMutableDictionary alloc] initWithContentsOfFile:@"/var/mobile/Library/Preferences/com.jontelang.boover.plist"];
-    NSLog(@"%@",prefs);
+    NSLog(@"Boover - %@",prefs);
     if(prefs){
         if ( [prefs objectForKey:@"isEnabled"] ){
             BooverEnabled = [[prefs valueForKey:@"isEnabled"] boolValue];
@@ -152,12 +146,14 @@ static float BooverDegrees = 0;
         if ( [prefs objectForKey:@"Alpha"] ){
             BooverAlpha = [[prefs valueForKey:@"Alpha"] floatValue];   
         }
-        if ( [prefs objectForKey:@"Color"] ){
-            NSString *tempC = [prefs valueForKey:@"Color"];   
-            NSArray *comps = [tempC componentsSeparatedByString:@" "];
-            BooverR = [comps[0] floatValue];
-            BooverG = [comps[1] floatValue];
-            BooverB = [comps[2] floatValue];
+        if ( [prefs objectForKey:@"Red"] ){
+            BooverR = [[prefs valueForKey:@"Red"] floatValue] / 255.0f;
+        }
+        if ( [prefs objectForKey:@"Green"] ){
+            BooverG = [[prefs valueForKey:@"Green"] floatValue] / 255.0f;
+        }
+        if ( [prefs objectForKey:@"Blue"] ){
+            BooverB = [[prefs valueForKey:@"Blue"] floatValue] / 255.0f;
         }
         if ( [prefs objectForKey:@"Size"] ){
             BooverSize = [[prefs valueForKey:@"Size"] floatValue];   
@@ -168,6 +164,167 @@ static float BooverDegrees = 0;
         if ( [prefs objectForKey:@"Degrees"] ){
             BooverDegrees = [[prefs valueForKey:@"Degrees"] floatValue];   
         }
+        if ( [prefs objectForKey:@"BooverShouldGetColorFromIcon"] ){
+            BooverShouldGetColorFromIcon = [[prefs valueForKey:@"BooverShouldGetColorFromIcon"] boolValue];   
+        }
+        if ( [prefs objectForKey:@"hasBorder"] ){
+            BooverHasBorder = [[prefs valueForKey:@"hasBorder"] boolValue];   
+        }
     }
     [prefs release];
 }
+
+
+
+
+
+%hook SBIconBadgeView
+
+- (void)configureAnimatedForIcon:(id)arg1 location:(int)arg2 highlighted:(_Bool)arg3 withPreparation:(id)arg4 animation:(id)arg5 completion:(id)arg6
+{
+  if( BooverEnabled )
+  {
+    [self getAndSetColor:[(SBIcon*)arg1 getIconImage:1]];
+    [self makeImage];
+  }
+  %orig();
+}
+
+- (void)configureForIcon:(id)arg1 location:(int)arg2 highlighted:(_Bool)arg3
+{ 
+    if( BooverEnabled )
+    {
+      [self getAndSetColor:[(SBIcon*)arg1 getIconImage:1]];
+      [self makeImage];
+    }
+    %orig();
+}
+
+struct pixel {
+    unsigned char r, g, b, a;
+};
+
+%new
+- (void)setDominantColor:(UIImage*)image
+{
+    NSUInteger red = 0;
+    NSUInteger green = 0;
+    NSUInteger blue = 0;
+
+    struct pixel* pixels = (struct pixel*) calloc(1, image.size.width * image.size.height * sizeof(struct pixel));
+    if (pixels != nil)
+    {
+
+        CGContextRef context = CGBitmapContextCreate(
+                                                 (void*) pixels,
+                                                 image.size.width,
+                                                 image.size.height,
+                                                 8,
+                                                 image.size.width * 4,
+                                                 CGImageGetColorSpace(image.CGImage),
+                                                 kCGImageAlphaPremultipliedLast
+                                                 );
+
+        if (context != NULL)
+        {
+            // Draw the image in the bitmap
+
+            CGContextDrawImage(context, CGRectMake(0.0f, 0.0f, image.size.width, image.size.height), image.CGImage);
+
+            // Now that we have the image drawn in our own buffer, we can loop over the pixels to
+            // process it. This simple case simply counts all pixels that have a pure red component.
+
+            // There are probably more efficient and interesting ways to do this. But the important
+            // part is that the pixels buffer can be read directly.
+
+            NSUInteger numberOfPixels = image.size.width * image.size.height;
+            NSUInteger pixelsToOmitt = 0;
+            for (int i=0; i<numberOfPixels; i++) {
+
+                NSUInteger threshhold = 210;
+
+                if(pixels[i].r > threshhold){
+                if(pixels[i].g > threshhold){
+                if(pixels[i].b > threshhold){
+                  pixelsToOmitt++;
+                  continue;
+                }}}
+
+                red += pixels[i].r;
+                green += pixels[i].g;
+                blue += pixels[i].b;
+            }
+
+            numberOfPixels -= pixelsToOmitt;
+
+            red   /= numberOfPixels;
+            green /= numberOfPixels;
+            blue  /= numberOfPixels;
+
+            CGContextRelease(context);
+        }
+
+        free(pixels);
+    }
+
+    BooverTempColorR = red/255.0f;
+    BooverTempColorG = green/255.0f;
+    BooverTempColorB = blue/255.0f;
+}
+
+%new
+-(void)getAndSetColor:(UIImage*)arg1
+{
+  if(arg1)
+  {
+    [self setDominantColor:arg1];
+    BooverGotColorFromIcon = YES;
+  }
+  else
+  {
+    BooverGotColorFromIcon = NO;
+  }
+}
+
+%new
+-(void)makeImage
+{
+  //Create a temporary COLORED view
+  UIView *bv = [[UIView alloc] initWithFrame:CGRectMake(0, 0, BooverSize, BooverSize)];
+  bv.layer.cornerRadius = ((BooverSize/2)*BooverRadius);
+
+  // Border?
+  if(BooverHasBorder)
+  {
+    bv.layer.borderWidth = 1;
+    bv.layer.borderColor = [UIColor whiteColor].CGColor;
+  }
+  
+  // Set the color
+  bv.backgroundColor = [UIColor colorWithRed:BooverR green:BooverG blue:BooverB alpha:BooverAlpha];
+
+  // Other color?
+  if(BooverShouldGetColorFromIcon && BooverGotColorFromIcon)
+  {
+    // Set the new color
+    bv.backgroundColor = [UIColor colorWithRed:BooverTempColorR green:BooverTempColorG blue:BooverTempColorB alpha:BooverAlpha];
+  }
+
+  // Start a new image context
+  UIGraphicsBeginImageContextWithOptions(bv.frame.size, NO, [UIScreen mainScreen].scale);
+  
+  // Copy view into an image
+  [bv.layer renderInContext:UIGraphicsGetCurrentContext()];
+  
+  // Load the image
+  UIImage *img = UIGraphicsGetImageFromCurrentImageContext();
+  
+  // Step one done
+  UIGraphicsEndImageContext();
+
+  // Actually set the image
+  SBDarkeningImageView* v = MSHookIvar<SBDarkeningImageView*>(self,"_backgroundView");
+  [v setImage:img];
+}
+
+%end

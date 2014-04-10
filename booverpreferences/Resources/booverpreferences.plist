@@ -6,16 +6,19 @@
 	<array>
 
 		<dict>
-			<key>cell</key> 				<string>PSGroupCell</string>
+			<key>cell</key> 		<string>PSGroupCell</string>
 		</dict>
 		<dict>
 			<key>cell</key>			<string>PSButtonCell</string>
 			<key>label</key>		<string>Save and respring</string>
 			<key>action</key>  		<string>respring</string>
+			<key>alignment</key>    <string>2</string>
+			<key>id</key> 			<string>RespringID</string>
 		</dict>
 
 		<dict>
-			<key>cell</key> 				<string>PSGroupCell</string>
+			<key>cell</key> 		<string>PSGroupCell</string>
+			<key>label</key> 	  	<string>Killswitch</string>
 		</dict>
 		<dict>
 			<key>cell</key>			<string>PSSwitchCell</string>
@@ -25,19 +28,28 @@
 			<key>label</key>		<string>Enable</string>
 			<key>enabled</key> 		<true/>
 			<key>default</key> 		<false/>
-			<key>alternateColors</key><true/>
+		</dict>
+
+		<dict>
+			<key>cell</key> 		<string>PSGroupCell</string>
+			<key>label</key> 	  	<string>Appearance</string>
+		</dict>
+		<dict>
+			<key>cell</key>			<string>PSLinkCell</string>
+			<key>label</key>		<string>Position and size</string>
+			<key>detail</key>		<string>MoveController</string>
 		</dict>
 
 		<dict>
 			<key>cell</key>			<string>PSLinkCell</string>
-			<key>label</key>		<string>Position, size and color</string>
-			<key>icon</key>			<string>move.png</string>
-			<key>hasIcon</key>		<true/>
-			<key>detail</key>		<string>MoveController</string>
-			<!--key>id</key> 			<string>com.jontelang.boover</string-->
+			<key>label</key>		<string>Colors</string>
+			<key>detail</key>		<string>ColorController</string>
 		</dict>
 
-
+		<!--dict>
+			<key>cell</key> 		<string>PSGroupCell</string>
+			<key>footerText</key>   <string>You must respring to save the settings.</string>
+		</dict>
 		<dict>
 			<key>cell</key>			<string>PSLinkCell</string>
 			<key>label</key>		<string>More..</string>
@@ -45,7 +57,7 @@
 			<key>hasIcon</key>		<true/>
 			<key>detail</key>		<string>JontelangPreferencesController_booverpreferences</string>
 			<key>id</key> 			<string>com.jontelang.boover</string>
-		</dict>
+		</dict-->
 
 	</array>
 	<key>title</key>				<string>Boover settings</string>

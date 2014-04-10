@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>items</key>
+	<array>
+
+		<dict>
+			<key>cell</key> 		<string>PSGroupCell</string>
+			<key>label</key> 		<string>Badge color (RGB)</string>
+		</dict>
+		<dict>
+			<key>cell</key> 			<string>PSSliderCell</string>
+			<key>default</key> 			<real>255</real>
+			<key>max</key>	 			<real>255</real>
+			<key>min</key>	 			<real>0</real>
+			<key>defaults</key> 		<string>com.jontelang.boover</string>
+			<key>showValue</key> 		<true/>
+			<key>key</key> 				<string>Red</string>
+		</dict>
+		<dict>
+			<key>cell</key> 			<string>PSSliderCell</string>
+			<key>default</key> 			<real>255</real>
+			<key>max</key>	 			<real>255</real>
+			<key>min</key>	 			<real>0</real>
+			<key>defaults</key> 		<string>com.jontelang.boover</string>
+			<key>showValue</key> 		<true/>
+			<key>key</key> 				<string>Green</string>
+		</dict>
+		<dict>
+			<key>cell</key> 			<string>PSSliderCell</string>
+			<key>default</key> 			<real>255</real>
+			<key>max</key>	 			<real>255</real>
+			<key>min</key>	 			<real>0</real>
+			<key>defaults</key> 		<string>com.jontelang.boover</string>
+			<key>showValue</key> 		<true/>
+			<key>key</key> 				<string>Blue</string>
+		</dict>
+
+		<dict>
+			<key>cell</key> 		<string>PSGroupCell</string>
+			<key>label</key> 		<string>Alpha</string>
+		</dict>
+		<!--dict>
+			<key>cell</key>    			<string>PSLinkListCell</string>
+			<key>label</key>   			<string>Choose color</string>
+			<key>detail</key>  			<string>ColorPSListItemsController</string>
+			<key>titlesDataSource</key> <string>getColors</string>
+			<key>valuesDataSource</key> <string>getColors</string>
+			<key>key</key> 		 	 	<string>Color</string>
+			<key>defaults</key>			<string>com.jontelang.boover</string>
+		</dict-->
+		<dict>
+			<key>cell</key> 			<string>PSSliderCell</string>
+			<key>default</key> 			<real>1.0</real>
+			<key>max</key>	 			<real>1.0</real>
+			<key>min</key>	 			<real>0.0</real>
+			<key>defaults</key> 		<string>com.jontelang.boover</string>
+			<key>key</key> 				<string>Alpha</string>
+		</dict>
+
+		<dict>
+			<key>cell</key> 		<string>PSGroupCell</string>
+			<key>label</key> 		<string>Other</string>
+		</dict>
+		<dict>
+			<key>cell</key>			<string>PSSwitchCell</string>
+			<key>defaults</key>		<string>com.jontelang.boover</string>
+			<key>key</key> 			<string>hasBorder</string>
+			<key>label</key>		<string>Border</string>
+			<key>default</key> 		<false/>
+		</dict>
+
+		<dict>
+			<key>cell</key> 		<string>PSGroupCell</string>
+			<key>label</key>        <string>Experimental</string>
+			<key>footerText</key> 	<string>Having this enabled will colorize the badge based on the color of the icon. If the color is wrong please send me a screenshot so that I can make the algorithm better.
+NOTE: Folders will have the color you choose above.</string>
+		</dict>
+		<dict>
+			<key>cell</key>			<string>PSSwitchCell</string>
+			<key>defaults</key>		<string>com.jontelang.boover</string>
+			<key>key</key> 			<string>BooverShouldGetColorFromIcon</string>
+			<key>label</key>		<string>Get from icon</string>
+			<key>default</key> 		<false/>
+		</dict>
+
+	</array>
+	<key>title</key> <string>Color</string>
+
+</dict>
+</plist>
