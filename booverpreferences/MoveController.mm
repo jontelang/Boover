@@ -269,7 +269,8 @@
 
                 sliderSize = [[UISlider alloc] initWithFrame:CGRectMake(10, 160+7, viewRect.size.width-20, 44)];
                 [sliderSize setMaximumValue:72];
-                [sliderSize setMinimumValue:24];
+                // [sliderSize setMinimumValue:24];
+                // [sliderSize setMinimumValue:12];
                 [sliderSize setValue:size]; // s
                 [sliderSize setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
                 [sliderSize addTarget:self action:@selector(sliderSize:) forControlEvents:UIControlEventValueChanged];

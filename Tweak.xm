@@ -14,12 +14,14 @@ static float BooverTempColorG = 0;
 static float BooverTempColorB = 0;
 static float BooverGotColorFromIcon       = NO;
 static float BooverShouldGetColorFromIcon = NO;
+static BOOL  BooverShouldHideText         = NO;
 
 @interface SBIconView : UIView @end
 @interface SBIcon : NSObject 
 - (id)displayName;
 - (id)getIconImage:(int)arg1;
 - (id)nodeIdentifier;
+- (void)setBadge:(id)badge;
 @end
 @interface SBDarkeningImageView : UIView 
 - (void)setImage:(id)arg1;
@@ -33,7 +35,6 @@ static float BooverShouldGetColorFromIcon = NO;
 - (void)makeImage;
 @end
 @interface SBIconAccessoryImage : UIImage @end
-
 
 
 // iOS 7
@@ -51,6 +52,16 @@ static float BooverShouldGetColorFromIcon = NO;
 }
 
 %end
+
+%hook SBApplicationIcon
+-(void)setBadge:(id)badge{
+  %orig(@"");
+}
+-(int)badgeValue{
+  return 0;
+}
+// -(void)setBadge:(NSString*)badge;
+%end 
 
 // Both
 %hook SBIconView
@@ -74,8 +85,8 @@ static float BooverShouldGetColorFromIcon = NO;
         if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0)
         {
             // Improve this
-            float biggerW  = (o.size.width > BooverSize) ? o.size.width : BooverSize;
-            float smallerW = (o.size.width > BooverSize) ? BooverSize : o.size.width;
+            float biggerW  = BooverSize; //(o.size.width > BooverSize) ? o.size.width : BooverSize;
+            float smallerW = BooverSize; //(o.size.width > BooverSize) ? BooverSize : o.size.width;
             float correctionW = biggerW - smallerW;
             o.origin.x = BooverX - (correctionW/2);
             o.origin.y = BooverY;
@@ -128,6 +139,32 @@ static float BooverShouldGetColorFromIcon = NO;
         }
     }
 }
+
+// // -(struct CGRect)_frameForVisibleImage
+// // {
+  
+// // }
+
+// - (struct CGSize)iconImageVisibleSize
+// {
+//   return %orig();
+// }
+// - (struct CGPoint)iconImageCenter
+// {
+//   return %orig();
+// }
+// - (struct CGRect)iconImageFrame
+// {
+//   CGRect o = %orig();
+//   float percentagesmaller = 0.5f; 
+//   float smaller = o.size.width * percentagesmaller;
+//   o.size.width -= smaller;
+//   o.size.height -= smaller;
+//   o.origin.x += smaller / 2;
+//   o.origin.y += smaller / 2;
+//   return o;  
+// }
+
 %end
 
 %ctor
@@ -167,6 +204,9 @@ static float BooverShouldGetColorFromIcon = NO;
         if ( [prefs objectForKey:@"BooverShouldGetColorFromIcon"] ){
             BooverShouldGetColorFromIcon = [[prefs valueForKey:@"BooverShouldGetColorFromIcon"] boolValue];   
         }
+        if ( [prefs objectForKey:@"BooverShouldHideText"] ){
+            BooverShouldHideText = [[prefs valueForKey:@"BooverShouldHideText"] boolValue];   
+        }
         if ( [prefs objectForKey:@"hasBorder"] ){
             BooverHasBorder = [[prefs valueForKey:@"hasBorder"] boolValue];   
         }
@@ -177,8 +217,25 @@ static float BooverShouldGetColorFromIcon = NO;
 
 
 
-
 %hook SBIconBadgeView
+
++ (id)_createImageForText:(id)arg1 highlighted:(_Bool)arg2{
+  if(BooverShouldHideText&&BooverEnabled){arg1 = @" ";}
+  return %orig();
+}
+// + (id)_checkoutImageForText:(id)arg1 highlighted:(_Bool)arg2{
+//   arg1 = @"";
+//   return %orig();
+// }
+// - (void)layoutSubviews
+// {
+//   NSLog(@"gggggggdsg gg g g gg g %@", self);
+//   %orig();
+// }
+// - (void)_configureAnimatedForText:(id)arg1 highlighted:(_Bool)arg2 withPreparation:(id)arg3 animation:(id)arg4 completion:(id)arg5{
+//   arg1 = @"";
+//   %orig();
+// }
 
 - (void)configureAnimatedForIcon:(id)arg1 location:(int)arg2 highlighted:(_Bool)arg3 withPreparation:(id)arg4 animation:(id)arg5 completion:(id)arg6
 {

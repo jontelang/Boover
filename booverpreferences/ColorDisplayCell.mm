@@ -1,5 +1,6 @@
 #include "_own_/Preferences5/Preferences.h"
-//#import <QuartzCore/QuartzCore.h>
+#import <Foundation/Foundation.h>
+
 
 @interface ColorDisplayCell : PSTableCell <PreferencesTableCustomView> {
 }
@@ -15,6 +16,8 @@
 
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(updateColor)];
         [self addGestureRecognizer:tap];
+
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateColor) name:@"com.jontelang.boover" object:nil];
 
         NSLog(@"Creating new ColorDisplayCell");
     }
@@ -40,7 +43,8 @@
     }
 }
 
-- (float)preferredHeightForWidth:(float)arg1
+- (CGFloat)preferredHeightForWid//th:(CGFloat)arg1
+//- (float)preferredHeightForWidth:(float)arg1
 {
     return 40;
 }
