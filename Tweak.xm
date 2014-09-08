@@ -42,7 +42,7 @@ static BOOL  BooverShouldHideText         = NO;
 
 -(id)initWithFrame:(CGRect)arg1
 {
-    %log;
+    //%log;
     id o = %orig();
     if(BooverEnabled)
     {
@@ -69,7 +69,7 @@ static BOOL  BooverShouldHideText         = NO;
 //iOS 7 (and 6, apparently)
 -(CGRect)_frameForAccessoryView
 {
-    %log;
+    //%log;
     CGRect o = %orig();
     if(BooverEnabled)
     {
@@ -95,7 +95,7 @@ static BOOL  BooverShouldHideText         = NO;
             o.size.height = BooverSize;
         }
     }
-    NSLog(@"Boover - _frameForAccessoryView returns %@",NSStringFromCGRect(o));
+    //NSLog(@"Boover - _frameForAccessoryView returns %@",NSStringFromCGRect(o));
     return o;
 }
 
@@ -128,7 +128,7 @@ static BOOL  BooverShouldHideText         = NO;
         
         // -1 up because the images seems to be 29x31 so 31-29=2 /2 = 1
         if(v.bounds.size.height!=0&&v.bounds.size.width!=0){
-            NSLog(@"Boover - --------- %@",NSStringFromCGRect(v.bounds));
+            //NSLog(@"Boover - --------- %@",NSStringFromCGRect(v.bounds));
             float h = BooverSize;
             float w = BooverSize * (v.bounds.size.width/v.bounds.size.height);
             float correctionW = (w>h)?w-h:h-w;
@@ -169,9 +169,9 @@ static BOOL  BooverShouldHideText         = NO;
 
 %ctor
 {
-    NSLog(@"Boover - loadPrefs - Boover");
+    //NSLog(@"Boover - loadPrefs - Boover");
     NSMutableDictionary *prefs = [[NSMutableDictionary alloc] initWithContentsOfFile:@"/var/mobile/Library/Preferences/com.jontelang.boover.plist"];
-    NSLog(@"Boover - %@",prefs);
+    //NSLog(@"Boover - %@",prefs);
     if(prefs){
         if ( [prefs objectForKey:@"isEnabled"] ){
             BooverEnabled = [[prefs valueForKey:@"isEnabled"] boolValue];
@@ -229,7 +229,7 @@ static BOOL  BooverShouldHideText         = NO;
 // }
 // - (void)layoutSubviews
 // {
-//   NSLog(@"gggggggdsg gg g g gg g %@", self);
+//   //NSLog(@"gggggggdsg gg g g gg g %@", self);
 //   %orig();
 // }
 // - (void)_configureAnimatedForText:(id)arg1 highlighted:(_Bool)arg2 withPreparation:(id)arg3 animation:(id)arg4 completion:(id)arg5{
