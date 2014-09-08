@@ -94,7 +94,7 @@ static BOOL  BooverShouldHideText         = NO;
             float correctionW = biggerW - smallerW;
             o.origin.x = BooverX - (correctionW/2);
             o.origin.y = BooverY;
-            o.size.width  = biggerW - (correctionW/4);
+            o.size.width  = biggerW ;//- (correctionW/4);
             //float biggerH  = (o.size.height > BooverSize) ? o.size.height : BooverSize;
             o.size.height = BooverSize;
 
@@ -372,7 +372,7 @@ struct pixel {
   float correctionW = biggerW - smallerW;
   o.origin.x = BooverX - (correctionW/2);
   o.origin.y = BooverY;
-  o.size.width  = biggerW - (correctionW/4);
+  o.size.width  = biggerW ;//- (correctionW/4);
   //float biggerH  = (o.size.height > BooverSize) ? o.size.height : BooverSize;
   o.size.height = BooverSize;
 
