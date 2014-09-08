@@ -21,7 +21,11 @@ static BOOL  BooverShouldHideText         = NO;
 - (id)displayName;
 - (id)getIconImage:(int)arg1;
 - (id)nodeIdentifier;
+- (int)badgeValue;
 - (void)setBadge:(id)badge;
+@end
+@interface SBApplicationIcon : SBIcon
+-(int)badgeValue;
 @end
 @interface SBDarkeningImageView : UIView 
 - (void)setImage:(id)arg1;
@@ -32,7 +36,7 @@ static BOOL  BooverShouldHideText         = NO;
 }
 - (void)setDominantColor:(UIImage*)image;
 - (void)getAndSetColor:(UIImage*)arg1;
-- (void)makeImage;
+- (void)makeImageForValue:(CGRect)rect;
 @end
 @interface SBIconAccessoryImage : UIImage @end
 
@@ -85,14 +89,19 @@ static BOOL  BooverShouldHideText         = NO;
         if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0)
         {
             // Improve this
-            float biggerW  = BooverSize; //(o.size.width > BooverSize) ? o.size.width : BooverSize;
-            float smallerW = BooverSize; //(o.size.width > BooverSize) ? BooverSize : o.size.width;
+            float biggerW  = (o.size.width > BooverSize) ? o.size.width : BooverSize;
+            float smallerW = (o.size.width > BooverSize) ? BooverSize : o.size.width;
             float correctionW = biggerW - smallerW;
             o.origin.x = BooverX - (correctionW/2);
             o.origin.y = BooverY;
-            o.size.width  = biggerW;
+            o.size.width  = biggerW - (correctionW/4);
             //float biggerH  = (o.size.height > BooverSize) ? o.size.height : BooverSize;
             o.size.height = BooverSize;
+
+            /// dd
+            if(BooverShouldHideText){
+              o.size.width = BooverSize;
+            }
         }
     }
     //NSLog(@"Boover - _frameForAccessoryView returns %@",NSStringFromCGRect(o));
@@ -239,22 +248,33 @@ static BOOL  BooverShouldHideText         = NO;
 
 - (void)configureAnimatedForIcon:(id)arg1 location:(int)arg2 highlighted:(_Bool)arg3 withPreparation:(id)arg4 animation:(id)arg5 completion:(id)arg6
 {
+  %log();
   if( BooverEnabled )
   {
     [self getAndSetColor:[(SBIcon*)arg1 getIconImage:1]];
-    [self makeImage];
+    %orig();
+    [self makeImageForValue:self.bounds];
   }
-  %orig();
+  else
+  {
+    %orig();
+  }
+  
 }
 
 - (void)configureForIcon:(id)arg1 location:(int)arg2 highlighted:(_Bool)arg3
 { 
-    if( BooverEnabled )
-    {
-      [self getAndSetColor:[(SBIcon*)arg1 getIconImage:1]];
-      [self makeImage];
-    }
+  %log();
+  if( BooverEnabled )
+  {
+    [self getAndSetColor:[(SBIcon*)arg1 getIconImage:1]];
     %orig();
+    [self makeImageForValue:self.bounds];
+  }
+  else
+  {
+    %orig();
+  }
 }
 
 struct pixel {
@@ -344,19 +364,34 @@ struct pixel {
 }
 
 %new
--(void)makeImage
+-(void)makeImageForValue:(CGRect)o
 {
-  //Create a temporary COLORED view
-  UIView *bv = [[UIView alloc] initWithFrame:CGRectMake(0, 0, BooverSize, BooverSize)];
-  bv.layer.cornerRadius = ((BooverSize/2)*BooverRadius);
+  // Improve this
+  float biggerW  = (o.size.width > BooverSize) ? o.size.width : BooverSize;
+  float smallerW = (o.size.width > BooverSize) ? BooverSize : o.size.width;
+  float correctionW = biggerW - smallerW;
+  o.origin.x = BooverX - (correctionW/2);
+  o.origin.y = BooverY;
+  o.size.width  = biggerW - (correctionW/4);
+  //float biggerH  = (o.size.height > BooverSize) ? o.size.height : BooverSize;
+  o.size.height = BooverSize;
 
-  // Border?
+  /// dd
+  if(BooverShouldHideText){
+    o.size.width = BooverSize;
+  }
+
+  // NSLog(@"value is : %@", NSStringFromClass([value class]));
+  //Create a temporary COLORED view
+  UIView *bv = [[UIView alloc] initWithFrame:o];
+  bv.layer.cornerRadius = ((BooverSize/2)*BooverRadius);
+  
   if(BooverHasBorder)
   {
     bv.layer.borderWidth = 1;
     bv.layer.borderColor = [UIColor whiteColor].CGColor;
   }
-  
+
   // Set the color
   bv.backgroundColor = [UIColor colorWithRed:BooverR green:BooverG blue:BooverB alpha:BooverAlpha];
 
